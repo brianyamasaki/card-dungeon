@@ -14,9 +14,11 @@ export type CardJson = {
   actions: BattleActionJson[];
 }
 
+export const cardIdMin = 5000;
+
 export class Card {
-  static currentIndex = 0;
-  index;
+  static currentIndex = cardIdMin;
+  id;
   name;
   description;
   imageUrl; 
@@ -28,12 +30,16 @@ export class Card {
   constructor(json: CardJson) {
     const {name, description, imageUrl, cost, actions} = json;
 
-    this.index = Card.currentIndex++;
+    this.id = Card.currentIndex++;
     this.name = name;
     this.description = description;
     this.imageUrl = imageUrl;
     this.cost = cost;
     this.actions = actions.map((json: BattleActionJson) => new BattleAction(json))
+    if (!name || !description || cost === undefined || actions === undefined) {
+      const str = `error loading Card - name:${name}, description:${description}, cost:${cost}, actions:${actions}`;
+      console.error(str);
+    }
   }
 
   public toGroup(group: CardLocation) {

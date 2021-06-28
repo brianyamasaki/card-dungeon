@@ -14,7 +14,7 @@ const cardInHand = ({ card }: FunctionProps) => {
   return (
     <li className='card-in-hand'>
       <p>{card.name}</p>
-      <CardActions actions={card.actions} monsters={monsters} />
+      <CardActions card={card} monsters={monsters} />
     </li>
   );
 };

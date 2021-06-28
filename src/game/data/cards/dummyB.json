@@ -5,13 +5,15 @@
   "actions": [
     {
       "description": "Do 3 damage to one enemy",
-      "target": 1,
-      "damage": 3
+      "verb": "Attack",
+      "target": "targetEnemy",
+      "effects": [-3]
     },
     {
       "description": "Heal Yourself",
-      "target": 3,
-      "damage": 4
+      "verb": "Heal",
+      "target": "targetSelf",
+      "effects": [4]
     }
   ]
 }

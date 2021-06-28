@@ -7,13 +7,15 @@
   "actions": [
     {
       "description": "Do 3 damage to hero",
-      "target": 4,
-      "damage": 3
+      "verb":"Attack",
+      "target": "targetHero",
+      "effects": [-3]
     },
     {
       "description": "Burning to hero",
-      "target": 4,
-      "damagePerTurn": [3, 3, 3]
+      "verb": "Burn",
+      "target": "targetHero",
+      "effects": [-3, -3, -3]
     }
   ]
 }

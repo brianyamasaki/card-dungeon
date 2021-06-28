@@ -2,12 +2,14 @@ import Controller from "./Controller";
 import { CardLocation, Card, CardJson } from "./Card";
 import { CardGroup } from './CardGroup';
 
+import Hero, { HeroJson } from "./Hero";
+import { Monster, MonsterJson } from "./Monster";
+import Action from "./utilities/Action";
+
 import dummyJsonA from './data/cards/dummyA.json';
 import dummyJsonB from './data/cards/dummyB.json';
 import heroJsonA from './data/heroes/heroA.json';
 import monsterJsonA from './data/monsters/monsterA.json';
-import Hero, { HeroJson } from "./Hero";
-import { Monster, MonsterJson } from "./Monster";
 
 export var gameInterface: GameInterface | null = null;
 
@@ -41,6 +43,10 @@ class GameInterface {
 
   public getGameState() {
     return this.controller.getGameState();
+  }
+
+  public playCardInHand(cardId: number, action: Action) {
+    alert('playCard called');
   }
 }
 
