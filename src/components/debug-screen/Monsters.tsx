@@ -1,5 +1,5 @@
 import React from 'react';
-import Demon from './Monster';
+import MonsterDisplay from './Monster';
 import { Monster } from '../../game/Monster';
 
 interface FunctionProps {
@@ -10,7 +10,7 @@ const Monsters = ({ monsters }: FunctionProps) => {
   return (
     <ol>
       {monsters.map((monster, i) => (
-        <Demon monster={monster} key={i} />
+        <MonsterDisplay monster={monster} key={i} />
       ))}
     </ol>
   );
