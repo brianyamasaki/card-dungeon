@@ -1,8 +1,13 @@
 import React from 'react';
+import NumCurMax from '../../game/utilities/NumCurMax';
 
-const Health = () => (
+interface FunctionProps {
+  health: NumCurMax;
+}
+
+const Health = ({ health }: FunctionProps) => (
   <div>
-    Health: <span>20</span>/<span>30</span>
+    Health: <span>{health.getCur()}</span>/<span>{health.getMax()}</span>
   </div>
 );
 

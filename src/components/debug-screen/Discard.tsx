@@ -1,12 +1,19 @@
 import React from 'react';
+import { CardGroup } from '../../game/CardGroup';
 import CardInDeck from './CardInDeck';
+import { Card } from '../../game/Card';
 
-const Discard = () => (
+interface FuctionProps {
+  discard: CardGroup;
+}
+
+const Discard = ({ discard }: FuctionProps) => (
   <div className='discard'>
     <h4>Discard</h4>
     <ul>
-      <CardInDeck />
-      <CardInDeck />
+      {discard.getCards().map((card: Card) => (
+        <CardInDeck card={card} />
+      ))}
     </ul>
   </div>
 );

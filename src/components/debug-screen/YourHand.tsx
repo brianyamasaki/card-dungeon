@@ -1,12 +1,20 @@
 import React from 'react';
 import CardInHand from './CardInHand';
+import { CardGroup } from '../../game/CardGroup';
 import './YourHand.css';
 
-const yourHand = () => (
-  <ul className='your-hand'>
-    <CardInHand />
-    <CardInHand />
-  </ul>
-);
+interface YourHandProps {
+  cardgroup: CardGroup;
+}
 
-export default yourHand;
+const YourHand = ({ cardgroup }: YourHandProps) => {
+  return (
+    <ul className='your-hand'>
+      {cardgroup.getCards().map((card) => (
+        <CardInHand card={card} />
+      ))}
+    </ul>
+  );
+};
+
+export default YourHand;

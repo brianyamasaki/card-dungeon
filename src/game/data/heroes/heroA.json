@@ -1,0 +1,14 @@
+{
+  "name": "Hero A",
+  "description": "Sample Monster A",
+  "imageUrl": "",
+  "armor": 2,
+  "health": 5,
+  "actions": [
+    {
+      "description": "Do 3 damage to hero",
+      "target": 4,
+      "damage": 3
+    }
+  ]
+}

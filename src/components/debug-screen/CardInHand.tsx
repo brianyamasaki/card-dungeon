@@ -1,19 +1,22 @@
 import React from 'react';
-import { Button } from 'reactstrap';
+import { Card } from '../../game/Card';
+import CardActions from './CardActions';
+import { gameInterface } from '../../game/GameInterface';
 
 import './CardInHand.css';
 
-const cardInHand = () => (
-  <li className='card-in-hand'>
-    <span>
-      CardName (24 of 30) - etc
-      <br />
-      Do 3 damage
-    </span>
-    <span>
-      <Button color='primary'>Attack</Button>
-    </span>
-  </li>
-);
+interface FunctionProps {
+  card: Card;
+}
+const cardInHand = ({ card }: FunctionProps) => {
+  if (!gameInterface) return null;
+  const monsters = gameInterface.getGameState().getMonsters();
+  return (
+    <li className='card-in-hand'>
+      <p>{card.name}</p>
+      <CardActions actions={card.actions} monsters={monsters} />
+    </li>
+  );
+};
 
 export default cardInHand;

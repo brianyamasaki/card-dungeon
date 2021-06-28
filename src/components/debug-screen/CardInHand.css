@@ -1,7 +1,6 @@
 .card-in-hand {
   border: 1px solid black;
+  border-radius: 6px;
   padding: 0.5em;
-  display: flex;
-  justify-content: space-between;
   margin-bottom: 0.3em;
 }

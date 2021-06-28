@@ -1,8 +1,11 @@
 import React from 'react';
 
-const Armor = () => (
+interface FunctionProps {
+  armor: number;
+}
+const Armor = ({ armor }: FunctionProps) => (
   <div>
-    Armor: <span>20</span>
+    Armor: <span>{armor}</span>
   </div>
 );
 

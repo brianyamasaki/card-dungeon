@@ -1,22 +1,30 @@
 import React from 'react';
 import { Row, Col } from 'reactstrap';
-import Deck from './Deck';
-import Discard from './Discard';
-import ProtagonistState from './ProtagonistState';
+import DeckDisplay from './Deck';
+import DiscardDisplay from './Discard';
+import HeroState from './HeroState';
+import GameState from '../../game/GameState';
+
 import './GameState.css';
 
-const GameState = () => (
-  <Row className='game-state'>
-    <Col>
-      <Deck />
-    </Col>
-    <Col>
-      <Discard />
-    </Col>
-    <Col>
-      <ProtagonistState />
-    </Col>
-  </Row>
-);
+interface FunctionProps {
+  gameState: GameState;
+}
 
-export default GameState;
+const GameStateDisplay = ({ gameState }: FunctionProps) => {
+  return (
+    <Row className='game-state'>
+      <Col>
+        <DeckDisplay deck={gameState.getDeck()} />
+      </Col>
+      <Col>
+        <DiscardDisplay discard={gameState.getDiscard()} />
+      </Col>
+      <Col>
+        <HeroState hero={gameState.getHero()} />
+      </Col>
+    </Row>
+  );
+};
+
+export default GameStateDisplay;
