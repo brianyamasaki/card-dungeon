@@ -13,8 +13,10 @@ const cardInHand = ({ card }: FunctionProps) => {
   const monsters = gameInterface.getGameState().getMonsters();
   return (
     <li className='card-in-hand'>
-      <p>{card.name}</p>
-      <CardActions actions={card.actions} monsters={monsters} />
+      <p>
+        {card.name} (cost {card.cost})
+      </p>
+      <CardActions card={card} monsters={monsters} />
     </li>
   );
 };

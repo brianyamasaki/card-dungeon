@@ -1,5 +1,5 @@
 import NumCurMax from "./utilities/NumCurMax";
-import { DamageOverTurns } from "./utilities/DamageOverTurns";
+import { EffectsOverTurns } from "./utilities/EffectsOverTurns";
 
 export type HeroJson = {
   name: string;
@@ -9,7 +9,10 @@ export type HeroJson = {
   armor: number
 }
 
+export const heroIdMin = 0;
+
 export default class Hero {
+  static currentId = heroIdMin;
   name: string;
   description: string;
   imageUrl: string;
@@ -17,9 +20,11 @@ export default class Hero {
   armor: number;
   strengthDelta: number;
   defenseDelta:number;
-  damageOverTurns: DamageOverTurns[];
+  effectsOverTurns: EffectsOverTurns[];
+  id: number;
 
   constructor(json: HeroJson) {
+    this.id = Hero.currentId++;
     this.name = json.name;
     this.description = json.description || '';
     this.imageUrl = json.imageUrl;
@@ -27,13 +32,17 @@ export default class Hero {
     this.armor = json.armor;
     this.strengthDelta = 0;
     this.defenseDelta = 0;
-    this.damageOverTurns = [];
+    this.effectsOverTurns = [];
+    if (!json.name || !json.description || json.armor === undefined || json.health === undefined) {
+      const str = `error loading Hero - name:${this.name}, description:${this.description}, armor:${json.armor}, health:${json.health}`;
+      console.error(str);
+    }
   }
 
   // getters and methods TBD
 
-  public getDamageOverTurns() {
-    return this.damageOverTurns;
+  public getEffectsOverTurns() {
+    return this.effectsOverTurns;
   }
 
   public getStrengthDelta() {

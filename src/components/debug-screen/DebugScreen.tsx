@@ -7,6 +7,8 @@ import { gameInterface } from '../../game/GameInterface';
 
 import './DebugScreen.css';
 
+export var drawIndex = 0;
+
 const DebugScreen = () => {
   if (gameInterface === null) return null;
 

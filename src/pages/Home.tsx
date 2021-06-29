@@ -10,6 +10,7 @@ const Home = () => (
       <Link className='btn btn-primary' to='/debugScreen'>
         Debug Screen for Game
       </Link>
+      <Link to='/game'>In process Game</Link>
     </Row>
   </Container>
 );

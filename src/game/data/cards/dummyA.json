@@ -2,11 +2,13 @@
   "name": "Dummy A",
   "description":"This is a Dummy Card",
   "imageUrl":"",
+  "cost": 2,
   "actions": [
     {
       "description": "Do 3 damage to one enemy",
-      "target": 1,
-      "damage": 3
+      "verb": "Attack",
+      "target": "targetEnemy",
+      "effects": [-3]
     }
   ]
 }

@@ -1,6 +1,6 @@
 import { CardGroup } from './CardGroup';
 import NumCurMax from './utilities/NumCurMax';
-import { DamageOverTurns } from './utilities/DamageOverTurns';
+import { EffectsOverTurns } from './utilities/EffectsOverTurns';
 import Hero from './Hero';
 import { Monster } from './Monster';
 import { CardLocation } from './Card';
@@ -16,7 +16,7 @@ export default class GameState {
   private defenseDelta = 0;
 
   // Burning, Poison and other things that damage multiple points over turns get added here
-  damageOverTurns: DamageOverTurns[] = [];
+  damageOverTurns: EffectsOverTurns[] = [];
 
   constructor(hero:Hero, monsters: Monster[], deck: CardGroup, hand: CardGroup) {
     this.hero = hero;
@@ -45,5 +45,9 @@ export default class GameState {
 
   public getDiscard(): CardGroup {
     return this.discard || [];
+  }
+
+  public subtractFromMana(cost: number) {
+    this.mana.addToDelta(cost);
   }
 }

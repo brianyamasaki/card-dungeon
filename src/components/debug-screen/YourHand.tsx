@@ -10,8 +10,8 @@ interface YourHandProps {
 const YourHand = ({ cardgroup }: YourHandProps) => {
   return (
     <ul className='your-hand'>
-      {cardgroup.getCards().map((card) => (
-        <CardInHand card={card} />
+      {cardgroup.getCards().map((card, i) => (
+        <CardInHand card={card} key={i} />
       ))}
     </ul>
   );

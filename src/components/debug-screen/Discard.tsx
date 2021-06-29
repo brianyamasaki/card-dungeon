@@ -11,8 +11,8 @@ const Discard = ({ discard }: FuctionProps) => (
   <div className='discard'>
     <h4>Discard</h4>
     <ul>
-      {discard.getCards().map((card: Card) => (
-        <CardInDeck card={card} />
+      {discard.getCards().map((card: Card, i: number) => (
+        <CardInDeck card={card} key={i} />
       ))}
     </ul>
   </div>

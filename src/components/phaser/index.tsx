@@ -7,14 +7,23 @@ interface FunctionProps {
   height: number;
 }
 
+type State = {
+  count: number;
+};
+
 const PHASER_PARENT_ID = 'phaser-parent';
 
-export var phaserGame: Phaser.Game;
+export var phaserGame: Phaser.Game | null;
 
-const PhaserComponent = ({ width, height }: FunctionProps) => {
-  React.useEffect(() => {
+class PhaserComponent extends React.Component<FunctionProps, State> {
+  state: State = {
+    count: 0
+  };
+
+  componentDidMount() {
+    const { height, width } = this.props;
     let config = {
-      type: Phaser.AUTO,
+      type: Phaser.CANVAS,
       parent: PHASER_PARENT_ID,
       width,
       height,
@@ -23,8 +32,26 @@ const PhaserComponent = ({ width, height }: FunctionProps) => {
       scene: Splash
     };
     phaserGame = new Phaser.Game(config);
-  });
-  return <div id={PHASER_PARENT_ID}></div>;
-};
+  }
+
+  render() {
+    return <div id={PHASER_PARENT_ID}></div>;
+  }
+}
+// const PhaserComponent = ({ width, height }: FunctionProps) => {
+//   React.useEffect(() => {
+//     let config = {
+//       type: Phaser.CANVAS,
+//       parent: PHASER_PARENT_ID,
+//       width,
+//       height,
+//       title: 'Card Dungeon',
+//       backgroundColor: '#303030',
+//       scene: Splash
+//     };
+//     phaserGame = new Phaser.Game(config);
+//   }, []);
+//   return <div id={PHASER_PARENT_ID}></div>;
+// };
 
 export default PhaserComponent;

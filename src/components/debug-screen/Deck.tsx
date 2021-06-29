@@ -12,8 +12,8 @@ const Deck = ({ deck }: FunctionProps) => {
     <div className='deck'>
       <h4>Deck</h4>
       <ul>
-        {deck.getCards().map((card: Card) => (
-          <CardInDeck card={card} />
+        {deck.getCards().map((card: Card, i: number) => (
+          <CardInDeck card={card} key={i} />
         ))}
       </ul>
     </div>
