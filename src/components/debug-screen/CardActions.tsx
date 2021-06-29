@@ -14,10 +14,11 @@ interface FunctionProps {
 }
 
 const ActionButton = (
-  cardId: number,
+  card: Card,
   battleAction: BattleAction,
   targetIds: number[],
-  text: string
+  text: string,
+  i: number
 ) => {
   if (!gameInterface) return null;
   return (
@@ -26,10 +27,11 @@ const ActionButton = (
       size='sm'
       onClick={(evt) => {
         gameInterface?.playCardInHand(
-          cardId,
+          card,
           new Action(battleAction, targetIds)
         );
       }}
+      key={i}
     >
       {text}
     </Button>
@@ -37,40 +39,41 @@ const ActionButton = (
 };
 
 const PerMonsterButtons = (
-  cardId: number,
+  card: Card,
   battleAction: BattleAction,
   verb: string,
   monsters: Monster[]
 ) => {
   return monsters.map((monster: Monster, i) =>
-    ActionButton(cardId, battleAction, [monster.id], `${verb} ${i + 1}`)
+    ActionButton(card, battleAction, [monster.id], `${verb} ${i + 1}`, i)
   );
 };
 
 const ActionButtons = (
   battleAction: BattleAction,
   monsters: Monster[],
-  cardId: number
+  card: Card
 ) => {
   if (!gameInterface) return null;
   const monsterIds = monsters.map((monster) => monster.id);
   switch (battleAction.target) {
     case BattleTarget.TargetAllEnemies:
       return ActionButton(
-        cardId,
+        card,
         battleAction,
         monsterIds,
-        `${battleAction.verb} All`
+        `${battleAction.verb} All`,
+        0
       );
     case BattleTarget.TargetEnemy:
       return (
         <span>
-          {PerMonsterButtons(cardId, battleAction, battleAction.verb, monsters)}
+          {PerMonsterButtons(card, battleAction, battleAction.verb, monsters)}
         </span>
       );
     case BattleTarget.TargetSelf:
     case BattleTarget.TargetHero:
-      return ActionButton(cardId, battleAction, [], 'Heal self');
+      return ActionButton(card, battleAction, [], 'Heal self', 0);
     default:
       return null;
   }
@@ -79,11 +82,11 @@ const ActionButtons = (
 // Draws a list of possible actions that the card allows. Each action is followed by buttons
 // allowing those actions on each monster allowed.
 const CardActions = ({ card, monsters }: FunctionProps) => {
-  const actionLines = card.actions.map((action: BattleAction) => (
-    <li>
+  const actionLines = card.actions.map((action: BattleAction, i: number) => (
+    <li key={i}>
       <div>
         <span>{action.description}</span>
-        <span>{ActionButtons(action, monsters, card.id)}</span>
+        <span>{ActionButtons(action, monsters, card)}</span>
       </div>
     </li>
   ));

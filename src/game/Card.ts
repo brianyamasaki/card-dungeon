@@ -36,7 +36,7 @@ export class Card {
     this.imageUrl = imageUrl;
     this.cost = cost;
     this.actions = actions.map((json: BattleActionJson) => new BattleAction(json))
-    if (!name || !description || cost === undefined || actions === undefined) {
+    if (!json.name || !json.description || json.cost === undefined || json.actions === undefined) {
       const str = `error loading Card - name:${name}, description:${description}, cost:${cost}, actions:${actions}`;
       console.error(str);
     }

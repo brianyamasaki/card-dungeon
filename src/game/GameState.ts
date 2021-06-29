@@ -46,4 +46,8 @@ export default class GameState {
   public getDiscard(): CardGroup {
     return this.discard || [];
   }
+
+  public subtractFromMana(cost: number) {
+    this.mana.addToDelta(cost);
+  }
 }

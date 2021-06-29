@@ -45,8 +45,17 @@ class GameInterface {
     return this.controller.getGameState();
   }
 
-  public playCardInHand(cardId: number, action: Action) {
-    alert('playCard called');
+  public playCardInHand(card: Card, action: Action) {
+    const gameState = this.controller.getGameState();
+
+    // deal with cost of card
+    gameState.subtractFromMana(card.cost);
+
+    // move the card
+    gameState.getHand().removeCard(card);
+    gameState.getDiscard().addCard(card);
+
+    // TBD carry out damage
   }
 }
 

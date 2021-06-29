@@ -2,6 +2,7 @@
   "name": "Dummy B",
   "description":"This is a Dummy Card",
   "imageUrl":"",
+  "cost": 1,
   "actions": [
     {
       "description": "Do 3 damage to one enemy",
