@@ -21,20 +21,23 @@ export type BattleActionJson = {
   verb: string;
   target: BattleTarget;
   effects: number[];
+  armorUp: number[]; //Armor is the first area where damage goes. it is removed at end of turn.
 }
 
 export class BattleAction {
   description: string;
   verb: string;
   target: BattleTarget;
-  effectsOverTurns: EffectsOverTurns;
+  effectsOverTurns: EffectsOverTurns | null;
+  armorEffectsOverTurns: EffectsOverTurns | null;
 
   constructor(json: BattleActionJson) {
     this.description = json.description;
     this.target = json.target;
     this.verb = json.verb;
-    this.effectsOverTurns = new EffectsOverTurns(this, json.effects);
-    if (json.description === undefined || !objBattleTarget[json.target] || json.verb === undefined || json.effects === undefined) {
+    this.effectsOverTurns = json.effects ? new EffectsOverTurns(this, json.effects) : null;
+    this.armorEffectsOverTurns = json.armorUp ? new EffectsOverTurns(this, json.armorUp) : null;
+    if (json.description === undefined || !objBattleTarget[json.target] || json.verb === undefined) {
       const str = `error loading BattleAction - description:${json.description}, target:${json.target}, verb:${json.verb}, effects:${json.effects}`;
       console.error(str);
     }

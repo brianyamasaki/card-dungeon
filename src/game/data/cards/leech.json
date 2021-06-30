@@ -1,0 +1,20 @@
+{
+  "name": "Leech",
+  "description":"This is a healing and attack card",
+  "imageUrl":"",
+  "cost": 2,
+  "actions": [
+    {
+      "description": "Do 4 damage to one enemy",
+      "verb": "Attack",
+      "target": "targetEnemy",
+      "effects": [-4]
+    },
+    {
+      "description": "Heal Yourself for 4",
+      "verb": "Heal",
+      "target": "targetSelf",
+      "effects": [4]
+    }
+  ]
+}

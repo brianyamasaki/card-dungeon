@@ -1,0 +1,14 @@
+{
+  "name": "Fireball",
+  "description":"This is fireball attack",
+  "imageUrl":"",
+  "cost": 1,
+  "actions": [
+    {
+      "description": "Do 5 damage to one enemy",
+      "verb": "Attack",
+      "target": "targetEnemy",
+      "effects": [-5]
+    }
+  ]
+}

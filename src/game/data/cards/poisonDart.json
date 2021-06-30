@@ -1,0 +1,14 @@
+{
+  "name": "Poison Dart",
+  "description":"This is a Card that applies poison",
+  "imageUrl":"",
+  "cost": 2,
+  "actions": [
+    {
+      "description": "Apply poison for 3 turns",
+      "verb": "Poison",
+      "target": "targetEnemy",
+      "effects": [-4,-3,-2,-1]
+    }
+  ]
+}
