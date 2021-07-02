@@ -1,16 +1,17 @@
 import React from 'react';
-import { Card } from '../../game/Card';
+import { useRecoilValue } from 'recoil';
+import { monstersState } from './recoilState';
+import { RCard } from '../../game/Card';
+import { RMonster } from '../../game/Monster';
 import CardActions from './CardActions';
-import { gameInterface } from '../../game/GameInterface';
 
 import './CardInHand.css';
 
 interface FunctionProps {
-  card: Card;
+  card: RCard;
 }
-const cardInHand = ({ card }: FunctionProps) => {
-  if (!gameInterface) return null;
-  const monsters = gameInterface.getGameState().getMonsters();
+const CardInHand = ({ card }: FunctionProps) => {
+  const monsters: RMonster[] = useRecoilValue(monstersState);
   return (
     <li className='card-in-hand'>
       <p>
@@ -21,4 +22,4 @@ const cardInHand = ({ card }: FunctionProps) => {
   );
 };
 
-export default cardInHand;
+export default CardInHand;

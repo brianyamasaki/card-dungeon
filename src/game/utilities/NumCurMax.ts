@@ -1,3 +1,13 @@
+export type RNumCurMax = {
+  max: number;
+  cur: number;
+};
+
+export const initRNumCurMax: RNumCurMax = {
+  max: 0,
+  cur: 0
+}
+
 export default class NumCurMax {
   max = 0;
   delta = 0;
@@ -23,6 +33,13 @@ export default class NumCurMax {
 
   public getMax(){
     return this.max;
+  }
+
+  public getRNumCurMax() {
+    return {
+      max: this.max,
+      cur: this.max - this.delta
+    };
   }
 
   public toString() {

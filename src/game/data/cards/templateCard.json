@@ -1,0 +1,14 @@
+{
+  "name": "Card Name",
+  "description":"Description of the card that explains actions",
+  "imageUrl":"Eventually the filename for the card photo",
+  "cost": 2,
+  "actions": [
+    {
+      "description": "Description of the attack/healing/poisoning/burning, etc",
+      "verb": "Attack/Poison/Heal/Burn - (verb used on button)",
+      "target": "targetEnemy | targetSelf | targetHero | targetAllEnemies",
+      "health": [-3]
+    }
+  ]
+}

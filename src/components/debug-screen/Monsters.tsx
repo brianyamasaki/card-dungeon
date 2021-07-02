@@ -1,12 +1,11 @@
 import React from 'react';
+import { useRecoilValue } from 'recoil';
 import MonsterDisplay from './Monster';
-import { Monster } from '../../game/Monster';
+import { RMonster } from '../../game/Monster';
+import { monstersState } from './recoilState';
 
-interface FunctionProps {
-  monsters: Monster[];
-}
-
-const Monsters = ({ monsters }: FunctionProps) => {
+const Monsters = () => {
+  const monsters: RMonster[] = useRecoilValue(monstersState);
   return (
     <ol>
       {monsters.map((monster, i) => (

@@ -1,4 +1,4 @@
-import { Card, CardLocation } from './Card';
+import { Card, CardLocation, RCard } from './Card';
 export class CardGroup {
   cards: Card[];
   location: CardLocation;
@@ -15,9 +15,17 @@ export class CardGroup {
   }
 
   // remove card from group
-  public removeCard(card: Card) {
+  public removeCard(cardId: number): Card | null {
+    let removedCard: Card | null = null;
     // use the filter method to create an all new array for everything except the passed in card
-    this.cards = this.cards.filter((item: Card) => item.id !== card.id);
+    this.cards = this.cards.filter((item: Card) => {
+      if (item.id !== cardId) {
+        return true;
+      }
+      removedCard = item;
+      return false;
+    });
+    return removedCard;
   }
 
   // shuffle cards in group
@@ -27,6 +35,10 @@ export class CardGroup {
 
   public getCards(): Card[] {
     return this.cards;
+  }
+
+  public getRCards(): RCard[] {
+    return this.cards.map(card => card.getRCard());
   }
 
 }

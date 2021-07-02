@@ -1,20 +1,21 @@
 import React from 'react';
-import { gameInterface } from '../../game/GameInterface';
+import { useRecoilValue } from 'recoil';
 import './StatusEffects.css';
 
+import { strengthState, defenseState } from './recoilState';
+
 const StatusEffects = () => {
-  if (!gameInterface) return null;
-  const gameState = gameInterface.getGameState();
-  const hero = gameState.getHero();
+  const strength = useRecoilValue(strengthState);
+  const defense = useRecoilValue(defenseState);
   return (
     <div className='status-effects'>
       <div>
         <h5>Strength</h5>
-        <span>{hero.getStrengthDelta()}</span>
+        <span>{strength}</span>
       </div>
       <div>
         <h5>Defense</h5>
-        <span>{hero.getDefenseDelta()}</span>
+        <span>{defense}</span>
       </div>
     </div>
   );

@@ -1,5 +1,23 @@
 import { BattleAction } from "./BattleAction";
 
+export type REffectsOverTurns = {
+  battleAction: BattleAction;
+  currentIndex: number;
+  effects: number[];
+}
+
+export const initREffectsOverTurns = {
+  battleAction: {
+    description: '',
+    verb: '',
+    target: 0,
+    healthEffects: null,
+    armorUpEffects: null
+  },
+  currentIndex: 0,
+  effects: []
+};
+
 export class EffectsOverTurns {
   battleAction: BattleAction;
   currentIndex: number;
@@ -23,6 +41,15 @@ export class EffectsOverTurns {
 
   public getDamage() {
     return this.effects[this.currentIndex];
+  }
+
+  public getREffectsOverTurns(): REffectsOverTurns {
+    const { battleAction, currentIndex, effects} = this;
+    return {
+      battleAction,
+      currentIndex,
+      effects
+    };
   }
 
 }

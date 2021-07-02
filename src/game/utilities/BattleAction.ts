@@ -1,4 +1,4 @@
-import { EffectsOverTurns } from "./EffectsOverTurns";
+import { EffectsOverTurns, REffectsOverTurns } from "./EffectsOverTurns";
 
 export enum BattleTarget {
   TargetSelf = "targetSelf",
@@ -20,28 +20,55 @@ export type BattleActionJson = {
   description: string;
   verb: string;
   target: BattleTarget;
-  effects: number[];
+  health: number[];
   armorUp: number[]; //Armor is the first area where damage goes. it is removed at end of turn.
 }
+
+export type RBattleAction = {
+  description: string;
+  verb: string;
+  target: BattleTarget;
+  healthEffects: REffectsOverTurns | null;
+  armorUpEffects: REffectsOverTurns | null;
+};
+
+export const initRBattleAction = {
+  description: '',
+  verb: '',
+  target: BattleTarget.TargetSelf,
+  healthEffects: null,
+  armorUpEffects: null
+};
 
 export class BattleAction {
   description: string;
   verb: string;
   target: BattleTarget;
-  effectsOverTurns: EffectsOverTurns | null;
+  healthEffectsOverTurns: EffectsOverTurns | null;
   armorEffectsOverTurns: EffectsOverTurns | null;
 
   constructor(json: BattleActionJson) {
     this.description = json.description;
     this.target = json.target;
     this.verb = json.verb;
-    this.effectsOverTurns = json.effects ? new EffectsOverTurns(this, json.effects) : null;
+    this.healthEffectsOverTurns = json.health ? new EffectsOverTurns(this, json.health) : null;
     this.armorEffectsOverTurns = json.armorUp ? new EffectsOverTurns(this, json.armorUp) : null;
     if (json.description === undefined || !objBattleTarget[json.target] || json.verb === undefined) {
-      const str = `error loading BattleAction - description:${json.description}, target:${json.target}, verb:${json.verb}, effects:${json.effects}`;
+      const str = `error loading BattleAction - description:${json.description}, target:${json.target}, verb:${json.verb}, health:${json.health}`;
       console.error(str);
     }
   }
 
-
+  public getRBattleAction(): RBattleAction {
+    const { description, verb, target} = this;
+    const healthEffects = this.healthEffectsOverTurns ? this.healthEffectsOverTurns.getREffectsOverTurns() : null;
+    const armorUpEffects = this.armorEffectsOverTurns ? this.armorEffectsOverTurns.getREffectsOverTurns() : null;
+    return {
+      description,
+      verb,
+      target,
+      healthEffects,
+      armorUpEffects
+    };
+  }
 }

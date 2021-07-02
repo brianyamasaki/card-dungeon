@@ -9,7 +9,7 @@
       "description": "Do 3 damage to hero",
       "verb": "Attack",
       "target": "targetHero",
-      "effects": [-3]
+      "health": [-3]
     }
   ]
 }

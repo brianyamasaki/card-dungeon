@@ -1,10 +1,10 @@
-import { BattleAction } from "./BattleAction";
+import { RBattleAction } from "./BattleAction";
 
 export default class Action {
-  battleAction: BattleAction;
+  battleAction: RBattleAction;
   targetIds: number[];
 
-  constructor(battleAction: BattleAction, ids: number[]) {
+  constructor(battleAction: RBattleAction, ids: number[]) {
     this.targetIds = ids;
     this.battleAction = battleAction;
   }

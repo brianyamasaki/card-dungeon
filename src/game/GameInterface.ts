@@ -1,13 +1,13 @@
 import Controller from "./Controller";
-import { CardLocation, Card, CardJson } from "./Card";
+import { CardLocation, Card, CardJson, RCard } from "./Card";
 import { CardGroup } from './CardGroup';
+import { RBattleAction } from "./utilities/BattleAction";
 
 import Hero, { HeroJson } from "./Hero";
 import { Monster, MonsterJson } from "./Monster";
-import Action from "./utilities/Action";
 
-import dummyJsonA from './data/cards/dummyA.json';
-import dummyJsonB from './data/cards/dummyB.json';
+// import dummyJsonA from './data/cards/dummyA.json';
+// import dummyJsonB from './data/cards/dummyB.json';
 import fireballJson from './data/cards/fireball.json';
 import blockJson from './data/cards/block.json';
 import poisonDartJson from './data/cards/poisonDart.json';
@@ -30,8 +30,6 @@ class GameInterface {
     ];
     const deck = new CardGroup(CardLocation.Deck, cards);
     const handCards: Card[] = [
-      new Card(dummyJsonB as CardJson),
-      new Card(dummyJsonA as CardJson),
       new Card(fireballJson as CardJson),
       new Card(blockJson as CardJson),
       new Card(poisonDartJson as CardJson),
@@ -55,15 +53,18 @@ class GameInterface {
     return this.controller.getGameState();
   }
 
-  public playCardInHand(card: Card, action: Action) {
+  public playCardInHand(card: RCard, battleAction: RBattleAction, targetIds: number[]) {
     const gameState = this.controller.getGameState();
+    let movedCard: Card | null;
 
     // deal with cost of card
     gameState.subtractFromMana(card.cost);
 
     // move the card
-    gameState.getHand().removeCard(card);
-    gameState.getDiscard().addCard(card);
+    movedCard = gameState.getHand().removeCard(card.id);
+    if (movedCard) {
+      gameState.getDiscard().addCard(movedCard);
+    }
 
     // TBD carry out damage
   }
