@@ -8,13 +8,13 @@
       "description": "Do 3 damage to one enemy",
       "verb": "Attack",
       "target": "targetEnemy",
-      "effects": [-3]
+      "health": [-3]
     },
     {
       "description": "Heal Yourself",
       "verb": "Heal",
       "target": "targetSelf",
-      "effects": [4]
+      "health": [4]
     }
   ]
 }

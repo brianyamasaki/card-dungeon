@@ -1,14 +1,14 @@
 import React from 'react';
-import NumCurMax from '../../game/utilities/NumCurMax';
+import { useRecoilValue } from 'recoil';
+import { healthState } from './recoilState';
 
-interface FunctionProps {
-  health: NumCurMax;
-}
-
-const Health = ({ health }: FunctionProps) => (
-  <div>
-    Health: <span>{health.getCur()}</span>/<span>{health.getMax()}</span>
-  </div>
-);
+const Health = () => {
+  const { cur, max } = useRecoilValue(healthState);
+  return (
+    <div>
+      Health: <span>{cur}</span>/<span>{max}</span>
+    </div>
+  );
+};
 
 export default Health;

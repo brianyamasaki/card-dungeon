@@ -1,21 +1,21 @@
 import React from 'react';
-import { CardGroup } from '../../game/CardGroup';
+import { useRecoilValue } from 'recoil';
 import CardInDeck from './CardInDeck';
-import { Card } from '../../game/Card';
+import { RCard } from '../../game/Card';
+import { discardState } from './recoilState';
 
-interface FuctionProps {
-  discard: CardGroup;
-}
-
-const Discard = ({ discard }: FuctionProps) => (
-  <div className='discard'>
-    <h4>Discard</h4>
-    <ul>
-      {discard.getCards().map((card: Card, i: number) => (
-        <CardInDeck card={card} key={i} />
-      ))}
-    </ul>
-  </div>
-);
+const Discard = () => {
+  const cards = useRecoilValue(discardState);
+  return (
+    <div className='discard'>
+      <h4>Discard</h4>
+      <ul>
+        {cards.map((card: RCard, i: number) => (
+          <CardInDeck card={card} key={i} />
+        ))}
+      </ul>
+    </div>
+  );
+};
 
 export default Discard;

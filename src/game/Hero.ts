@@ -1,5 +1,5 @@
-import NumCurMax from "./utilities/NumCurMax";
-import { EffectsOverTurns } from "./utilities/EffectsOverTurns";
+import NumCurMax, { RNumCurMax } from "./utilities/NumCurMax";
+import { EffectsOverTurns, REffectsOverTurns } from "./utilities/EffectsOverTurns";
 
 export type HeroJson = {
   name: string;
@@ -8,6 +8,33 @@ export type HeroJson = {
   health: number;
   armor: number
 }
+
+export type RHero = {
+  id: number;
+  name: string;
+  description: string;
+  imageUrl: string;
+  health: RNumCurMax;
+  armor: number;
+  strengthDelta: number;
+  defenseDelta: number;
+  healthEffectsOverTurns: REffectsOverTurns[];
+}
+
+export const initRHero: RHero = {
+  id: 0,
+  name: '',
+  description: '',
+  imageUrl: '',
+  health: {
+    cur: 0,
+    max: 0
+  },
+  armor: 0,
+  strengthDelta: 0,
+  defenseDelta: 0,
+  healthEffectsOverTurns: []
+};
 
 export const heroIdMin = 0;
 
@@ -36,6 +63,22 @@ export default class Hero {
     if (!json.name || !json.description || json.armor === undefined || json.health === undefined) {
       const str = `error loading Hero - name:${this.name}, description:${this.description}, armor:${json.armor}, health:${json.health}`;
       console.error(str);
+    }
+  }
+
+  public getRHero(): RHero {
+    const { id, name, description, imageUrl, armor, strengthDelta, defenseDelta } = this;
+
+    return {
+      id,
+      name,
+      description,
+      imageUrl, 
+      armor,
+      strengthDelta,
+      defenseDelta,
+      health: this.health.getRNumCurMax(),
+      healthEffectsOverTurns: this.effectsOverTurns.map(effect => effect.getREffectsOverTurns())
     }
   }
 

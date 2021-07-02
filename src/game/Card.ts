@@ -1,4 +1,4 @@
-import { BattleAction, BattleActionJson } from './utilities/BattleAction';
+import { BattleAction, BattleActionJson, RBattleAction } from './utilities/BattleAction';
 
 export enum CardLocation {
   Deck,
@@ -15,6 +15,15 @@ export type CardJson = {
 }
 
 export const cardIdMin = 5000;
+
+export type RCard = {
+  id: number;
+  name: string;
+  description: string;
+  imageUrl: string;
+  cost: number;
+  actions: RBattleAction[];
+}
 
 export class Card {
   static currentIndex = cardIdMin;
@@ -56,6 +65,18 @@ export class Card {
   // following allows getting isSelected from _isSelected;
   get isSelected() {
     return this._isSelected;
+  }
+
+  public getRCard(): RCard {
+    const { id, name, description, imageUrl, cost} = this;
+    return {
+      id,
+      name, 
+      description,
+      imageUrl,
+      cost,
+      actions: this.actions.map(action => action.getRBattleAction())
+    }
   }
 
 }

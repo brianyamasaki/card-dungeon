@@ -9,13 +9,13 @@
       "description": "Do 3 damage to hero",
       "verb":"Attack",
       "target": "targetHero",
-      "effects": [-3]
+      "health": [-3]
     },
     {
       "description": "Burning to hero",
       "verb": "Burn",
       "target": "targetHero",
-      "effects": [-3, -3, -3]
+      "health": [-3, -3, -3]
     }
   ]
 }
