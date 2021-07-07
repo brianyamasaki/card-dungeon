@@ -51,7 +51,12 @@ const DebugScreen = () => {
             End Turn
           </Button>
           <br />
-          <Button size='large' color='danger' className='turn-buttons'>
+          <Button
+            size='large'
+            color='danger'
+            className='turn-buttons'
+            onClick={newGame}
+          >
             Restart Game
           </Button>
         </Col>

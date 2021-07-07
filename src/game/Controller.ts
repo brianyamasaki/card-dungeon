@@ -1,6 +1,6 @@
 import { Card } from './Card';
 import { CardGroup } from './CardGroup';
-import { BattleAction } from './utilities/BattleAction';
+import { BattleActions } from './utilities/BattleActions';
 import GameState from './GameState';
 import Hero from './Hero';
 import { Monster } from './Monster';
@@ -13,7 +13,7 @@ class Controller {
   }
   
 
-  public selectCard(card: Card, action: BattleAction, index?: number) {
+  public selectCard(card: Card, action: BattleActions, index?: number) {
 
   }
   public getGameState() {

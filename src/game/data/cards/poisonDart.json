@@ -3,12 +3,15 @@
   "description":"This is a Card that applies poison",
   "imageUrl":"",
   "cost": 2,
-  "actions": [
-    {
-      "description": "Apply poison for 3 turns",
-      "verb": "Poison",
-      "target": "targetEnemy",
-      "health": [-4,-3,-2,-1]
-    }
-  ]
+  "battleActions": {
+    "actionsCountMax": 1,
+    "actions": [
+      {
+        "description": "Apply poison for 3 turns",
+        "verb": "Poison",
+        "target": "targetEnemy",
+        "healthEffects": [-4,-3,-2,-1]
+      }
+    ]
+  }
 }

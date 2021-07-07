@@ -3,12 +3,15 @@
   "description":"This is armor generating card",
   "imageUrl":"",
   "cost": 1,
-  "actions": [
-    {
-      "description": "Gain 5 armor this turn. (armorUp needs to be added as an action)",
-      "verb": "Gain Armor",
-      "target": "targetSelf",
-      "armorUp":[5]
-    }
-  ]
+  "battleActions": {
+    "actionsCountMax": 1,
+    "actions": [
+      {
+        "description": "Gain 5 armor this turn. (armorUp needs to be added as an action)",
+        "verb": "Gain Armor",
+        "target": "targetSelf",
+        "armorUpEffects":[5]
+      }
+    ]
+  }
 }

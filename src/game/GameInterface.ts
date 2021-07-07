@@ -1,7 +1,7 @@
 import Controller from "./Controller";
 import { CardLocation, Card, CardJson, RCard } from "./Card";
 import { CardGroup } from './CardGroup';
-import { RBattleAction } from "./utilities/BattleAction";
+import { RAction } from "./utilities/Action";
 
 import Hero, { HeroJson } from "./Hero";
 import { Monster, MonsterJson } from "./Monster";
@@ -53,7 +53,7 @@ class GameInterface {
     return this.controller.getGameState();
   }
 
-  public playCardInHand(card: RCard, battleAction: RBattleAction, targetIds: number[]) {
+  public playCardInHand(card: RCard, action: RAction, targetIds: number[]) {
     const gameState = this.controller.getGameState();
     let movedCard: Card | null;
 

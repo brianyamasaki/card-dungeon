@@ -1,31 +1,29 @@
-import { BattleAction } from "./BattleAction";
+import { BattleTarget } from "./BattleTarget";
 
 export type REffectsOverTurns = {
-  battleAction: BattleAction;
+  description: string;
+  target: BattleTarget
   currentIndex: number;
   effects: number[];
 }
 
-export const initREffectsOverTurns = {
-  battleAction: {
-    description: '',
-    verb: '',
-    target: 0,
-    healthEffects: null,
-    armorUpEffects: null
-  },
+export const initREffectsOverTurns:REffectsOverTurns = {
+  description: '',
+  target: BattleTarget.TargetAllEnemies,
   currentIndex: 0,
   effects: []
 };
 
 export class EffectsOverTurns {
-  battleAction: BattleAction;
+  description: string;
+  target: BattleTarget;
   currentIndex: number;
   effects: number[];
   expired = false;
 
-  constructor(battleAction: BattleAction, effects: number[]) {
-    this.battleAction = battleAction;
+  constructor(description: string, target: BattleTarget, effects: number[]) {
+    this.description = description;
+    this.target = target;
     this.currentIndex = 0;
     this.effects = effects;
   }
@@ -40,13 +38,17 @@ export class EffectsOverTurns {
   }
 
   public getDamage() {
+    if (this.expired) {
+      return 0;
+    }
     return this.effects[this.currentIndex];
   }
 
   public getREffectsOverTurns(): REffectsOverTurns {
-    const { battleAction, currentIndex, effects} = this;
+    const { description, target, currentIndex, effects} = this;
     return {
-      battleAction,
+      description,
+      target,
       currentIndex,
       effects
     };

@@ -3,18 +3,21 @@
   "description":"This is a Dummy Card",
   "imageUrl":"",
   "cost": 1,
-  "actions": [
-    {
-      "description": "Do 3 damage to one enemy",
-      "verb": "Attack",
-      "target": "targetEnemy",
-      "health": [-3]
-    },
-    {
-      "description": "Heal Yourself",
-      "verb": "Heal",
-      "target": "targetSelf",
-      "health": [4]
-    }
-  ]
+  "battleActions": {
+    "actionsCountMax": 1,
+    "actions": [
+      {
+        "description": "Do 3 damage to one enemy",
+        "verb": "Attack",
+        "target": "targetEnemy",
+        "healthEffects": [-3]
+      },
+      {
+        "description": "Heal Yourself",
+        "verb": "Heal",
+        "target": "targetSelf",
+        "healthEffects": [4]
+      }
+    ]
+  }
 }

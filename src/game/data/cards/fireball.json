@@ -3,12 +3,16 @@
   "description":"This is fireball attack",
   "imageUrl":"",
   "cost": 1,
-  "actions": [
-    {
-      "description": "Do 5 damage to one enemy",
-      "verb": "Attack",
-      "target": "targetEnemy",
-      "health": [-5]
-    }
-  ]
+  "battleActions": {
+    "actionsCountMax": 1,
+    "actions":[
+      {
+        "description": "Do 5 damage to one enemy",
+        "verb": "Attack",
+        "target": "targetEnemy",
+        "healthEffects": [-5],
+        "armorUpEffects": []
+      }
+    ]
+  }
 }

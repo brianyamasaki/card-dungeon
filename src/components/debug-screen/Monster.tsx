@@ -7,7 +7,7 @@ interface FunctionProps {
 }
 
 const MonsterDisplay = ({ monster }: FunctionProps) => {
-  const actions = monster.actions;
+  const actions = monster.battleActions.actions;
   const attackMsg = actions.length > 0 ? actions[0].description : 'no action';
   return (
     <li className='monster'>

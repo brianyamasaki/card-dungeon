@@ -1,4 +1,4 @@
-import { BattleAction, BattleActionJson, RBattleAction } from './utilities/BattleAction';
+import { BattleActions, BattleActionsJson, RBattleAction } from './utilities/BattleActions';
 
 export enum CardLocation {
   Deck,
@@ -11,7 +11,7 @@ export type CardJson = {
   description:string;
   imageUrl:string;
   cost:number;
-  actions: BattleActionJson[];
+  battleActions: BattleActionsJson;
 }
 
 export const cardIdMin = 5000;
@@ -22,7 +22,7 @@ export type RCard = {
   description: string;
   imageUrl: string;
   cost: number;
-  actions: RBattleAction[];
+  battleActions: RBattleAction;
 }
 
 export class Card {
@@ -32,21 +32,21 @@ export class Card {
   description;
   imageUrl; 
   cost;
-  actions: BattleAction[];
+  battleActions: BattleActions;
   private _isSelected: boolean = false;
   location:CardLocation = CardLocation.Deck;
 
   constructor(json: CardJson) {
-    const {name, description, imageUrl, cost, actions} = json;
+    const {name, description, imageUrl, cost} = json;
 
     this.id = Card.currentIndex++;
     this.name = name;
     this.description = description;
     this.imageUrl = imageUrl;
     this.cost = cost;
-    this.actions = actions.map((json: BattleActionJson) => new BattleAction(json))
-    if (!json.name || !json.description || json.cost === undefined || json.actions === undefined) {
-      const str = `error loading Card - name:${name}, description:${description}, cost:${cost}, actions:${actions}`;
+    this.battleActions = new BattleActions(json.battleActions);
+    if (!json.name || !json.description || json.cost === undefined || json.battleActions === undefined) {
+      const str = `error loading Card - name:${name}, description:${description}, cost:${cost}, battleActions:${this.battleActions}`;
       console.error(str);
     }
   }
@@ -75,7 +75,7 @@ export class Card {
       description,
       imageUrl,
       cost,
-      actions: this.actions.map(action => action.getRBattleAction())
+      battleActions: this.battleActions.getRBattleAction()
     }
   }
 

@@ -2,13 +2,14 @@ import React from 'react';
 import { Button } from 'reactstrap';
 import { useSetRecoilState, SetterOrUpdater } from 'recoil';
 import { RMonster } from '../../game/Monster';
-import { RBattleAction, BattleTarget } from '../../game/utilities/BattleAction';
+import { BattleTarget } from '../../game/utilities/BattleTarget';
+import { RAction } from '../../game/utilities/Action';
 import { RCard } from '../../game/Card';
 import { gameInterface } from '../../game/GameInterface';
 import { gameStateAtom } from './recoilState';
+import { RGameState } from '../../game/GameState';
 
 import './CardActions.css';
-import { RGameState } from '../../game/GameState';
 
 interface FunctionProps {
   card: RCard;
@@ -17,7 +18,7 @@ interface FunctionProps {
 
 const ActionButton = (
   card: RCard,
-  battleAction: RBattleAction,
+  action: RAction,
   setGameState: SetterOrUpdater<RGameState>,
   targetIds: number[],
   text: string,
@@ -29,7 +30,7 @@ const ActionButton = (
       size='sm'
       onClick={() => {
         if (gameInterface) {
-          gameInterface.playCardInHand(card, battleAction, targetIds);
+          gameInterface.playCardInHand(card, action, targetIds);
           setGameState(gameInterface.getGameState().getRGameState());
         }
       }}
@@ -42,7 +43,7 @@ const ActionButton = (
 
 const PerMonsterButtons = (
   card: RCard,
-  battleAction: RBattleAction,
+  action: RAction,
   setGameState: SetterOrUpdater<RGameState>,
   verb: string,
   monsters: RMonster[]
@@ -50,7 +51,7 @@ const PerMonsterButtons = (
   return monsters.map((monster: RMonster, i) =>
     ActionButton(
       card,
-      battleAction,
+      action,
       setGameState,
       [monster.id],
       `${verb} ${i + 1}`,
@@ -60,38 +61,32 @@ const PerMonsterButtons = (
 };
 
 const ActionButtons = (
-  battleAction: RBattleAction,
+  action: RAction,
   monsters: RMonster[],
   card: RCard,
   setGameState: SetterOrUpdater<RGameState>
 ) => {
   if (!gameInterface) return null;
   const monsterIds = monsters.map((monster) => monster.id);
-  switch (battleAction.target) {
+  switch (action.target) {
     case BattleTarget.TargetAllEnemies:
       return ActionButton(
         card,
-        battleAction,
+        action,
         setGameState,
         monsterIds,
-        `${battleAction.verb} All`,
+        `${action.verb} All`,
         0
       );
     case BattleTarget.TargetEnemy:
       return (
         <span>
-          {PerMonsterButtons(
-            card,
-            battleAction,
-            setGameState,
-            battleAction.verb,
-            monsters
-          )}
+          {PerMonsterButtons(card, action, setGameState, action.verb, monsters)}
         </span>
       );
     case BattleTarget.TargetSelf:
     case BattleTarget.TargetHero:
-      return ActionButton(card, battleAction, setGameState, [], 'Heal self', 0);
+      return ActionButton(card, action, setGameState, [], 'Heal self', 0);
     default:
       return null;
   }
@@ -101,14 +96,16 @@ const ActionButtons = (
 // allowing those actions on each monster allowed.
 const CardActions = ({ card, monsters }: FunctionProps) => {
   const setGameState = useSetRecoilState(gameStateAtom);
-  const actionLines = card.actions.map((action: RBattleAction, i: number) => (
-    <li key={i}>
-      <div>
-        <span>{action.description}</span>
-        <span>{ActionButtons(action, monsters, card, setGameState)}</span>
-      </div>
-    </li>
-  ));
+  const actionLines = card.battleActions.actions.map(
+    (action: RAction, i: number) => (
+      <li key={i}>
+        <div>
+          <span>{action.description}</span>
+          <span>{ActionButtons(action, monsters, card, setGameState)}</span>
+        </div>
+      </li>
+    )
+  );
   return <ul className='card-actions'>{actionLines}</ul>;
 };
 

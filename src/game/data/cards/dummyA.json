@@ -3,12 +3,15 @@
   "description":"This is a Dummy Card",
   "imageUrl":"",
   "cost": 2,
-  "actions": [
-    {
+  "battleActions": {
+    "actionsCountMax": 1,
+    "actions": [    
+      {
       "description": "Do 3 damage to one enemy",
       "verb": "Attack",
       "target": "targetEnemy",
-      "health": [-3]
-    }
-  ]
+      "healthEffects": [-3]
+      }
+    ]
+  }
 }

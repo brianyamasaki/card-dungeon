@@ -4,18 +4,21 @@
   "imageUrl": "",
   "armor": 2,
   "health": 5,
-  "actions": [
-    {
-      "description": "Do 3 damage to hero",
-      "verb":"Attack",
-      "target": "targetHero",
-      "health": [-3]
-    },
-    {
-      "description": "Burning to hero",
-      "verb": "Burn",
-      "target": "targetHero",
-      "health": [-3, -3, -3]
-    }
-  ]
+  "battleActions": {
+    "actionsCountMax": 1,
+    "actions": [
+      {
+        "description": "Do 3 damage to hero",
+        "verb":"Attack",
+        "target": "targetHero",
+        "healthEffects": [-3]
+      },
+      {
+        "description": "Burning to hero",
+        "verb": "Burn",
+        "target": "targetHero",
+        "healthEffects": [-3, -3, -3]
+      }
+    ]
+  }
 }
