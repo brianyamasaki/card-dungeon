@@ -3,18 +3,21 @@
   "description":"This is a healing and attack card",
   "imageUrl":"",
   "cost": 2,
-  "actions": [
-    {
-      "description": "Do 4 damage to one enemy",
-      "verb": "Attack",
-      "target": "targetEnemy",
-      "health": [-4]
-    },
-    {
-      "description": "Heal Yourself for 4",
-      "verb": "Heal",
-      "target": "targetSelf",
-      "health": [4]
-    }
-  ]
+  "battleActions": {
+    "actionsCountMax": 1,
+    "actions": [
+      {
+        "description": "Do 4 damage to one enemy",
+        "verb": "Attack",
+        "target": "targetEnemy",
+        "healthEffects": [-4]
+      },
+      {
+        "description": "Heal Yourself for 4",
+        "verb": "Heal",
+        "target": "targetSelf",
+        "healthEffects": [4]
+      }
+    ]
+  }
 }

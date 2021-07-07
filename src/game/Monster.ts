@@ -1,4 +1,4 @@
-import { BattleAction, BattleActionJson, RBattleAction } from './utilities/BattleAction';
+import { BattleActions, BattleActionsJson, RBattleAction } from './utilities/BattleActions';
 import NumCurMax, { RNumCurMax } from './utilities/NumCurMax';
 
 export type MonsterJson = {
@@ -7,7 +7,7 @@ export type MonsterJson = {
   imageUrl: string;
   armor: number;
   health: number;
-  actions: BattleActionJson[];
+  battleActions: BattleActionsJson;
 }
 
 export type RMonster = {
@@ -17,7 +17,7 @@ export type RMonster = {
   imageUrl: string;
   armor: number;
   health: RNumCurMax;
-  actions: RBattleAction[];
+  battleActions: RBattleAction;
 }
 
 export const monsterIdMin = 1000;
@@ -29,7 +29,7 @@ export class Monster {
   imageUrl: string;
   armor: number;
   health: NumCurMax;
-  actions: BattleAction[];
+  battleActions: BattleActions;
   id: number;
 
   constructor(json:MonsterJson) {
@@ -38,11 +38,11 @@ export class Monster {
     this.imageUrl = json.imageUrl;
     this.armor = json.armor || 0;
     this.health = new NumCurMax(json.health);
-    this.actions = json.actions.map((json: BattleActionJson) => new BattleAction(json));
+    this.battleActions = new BattleActions(json.battleActions);
     this.id = Monster.currentId++;
 
-    if (!json.name || !json.description || json.armor === undefined || json.actions === undefined || json.health === undefined) {
-      const str = `error loading Card - name:${this.name}, description:${this.description}, armor:${json.armor}, health:${json.health}, actions:${json.actions}`;
+    if (!json.name || !json.description || json.armor === undefined || json.battleActions === undefined || json.health === undefined) {
+      const str = `error loading Card - name:${this.name}, description:${this.description}, armor:${json.armor}, health:${json.health}, battleActions:${json.battleActions}`;
       console.error(str);
     }
   }
@@ -57,7 +57,7 @@ export class Monster {
       imageUrl,
       armor,
       health: this.health.getRNumCurMax(),
-      actions: this.actions.map(action => action.getRBattleAction())
+      battleActions: this.battleActions.getRBattleAction()
     }
   }
 
