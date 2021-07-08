@@ -1,6 +1,7 @@
 import React from 'react';
 import Phaser from 'phaser';
 import Splash from './scenes/Splash';
+import GameScreen from './scenes/Game';
 
 interface FunctionProps {
   width: number;
@@ -29,7 +30,7 @@ class PhaserComponent extends React.Component<FunctionProps, State> {
       height,
       title: 'Card Dungeon',
       backgroundColor: '#303030',
-      scene: Splash
+      scene: [Splash, GameScreen]
     };
     phaserGame = new Phaser.Game(config);
   }
