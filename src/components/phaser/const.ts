@@ -5,7 +5,7 @@ export const phaserAssetsFolder = 'assets/phaser/';
 
 export const cardDimensions = {
   height: 225,
-  width: 150
+  width: 150,
 };
 
 export const cardPadding = 5;
@@ -16,12 +16,14 @@ export const paddedGameRectangle = {
   top: 20,
   bottom: 580,
   left: 20,
-  right: 980
+  right: 980,
 };
 
 export const handRectangle = {
   left: 100,
   right: 900,
   top: 355,
-  bottom:580
+  bottom: 580,
 };
+
+export type callBack = () => void;
