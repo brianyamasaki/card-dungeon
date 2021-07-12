@@ -21,7 +21,11 @@ export default class NumCurMax {
 
   public addToDelta(delta:number) {
     // damage is negative, healing is positive
-    this.delta = Math.min(0, this.delta + delta);
+    this.delta = Math.max(0, this.delta + delta);
+  }
+
+  public causeDamage(damage: number) {
+    this.delta = Math.max(0, this.delta - damage);
   }
 
   public increaseMax(delta: number) {
