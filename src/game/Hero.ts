@@ -84,6 +84,10 @@ export default class Hero {
 
   // getters and methods TBD
 
+  public healthEffect(effect:number) {
+    this.health.causeDamage(effect)
+  }
+
   public getEffectsOverTurns() {
     return this.effectsOverTurns;
   }

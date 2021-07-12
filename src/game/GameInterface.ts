@@ -14,6 +14,7 @@ import poisonDartJson from './data/cards/poisonDart.json';
 import leechJson from './data/cards/leech.json';
 import heroJsonA from './data/heroes/heroA.json';
 import monsterJsonA from './data/monsters/monsterA.json';
+import { act } from "react-dom/test-utils";
 
 
 export var gameInterface: GameInterface | null = null;
@@ -36,7 +37,7 @@ class GameInterface {
       new Card(leechJson as CardJson)
     ];
     const hand = new CardGroup(CardLocation.Hand, handCards);
-    const hero = new Hero(heroJsonA as HeroJson)
+    const hero = new Hero(heroJsonA as HeroJson);
     const monsters:Monster[] = [
       new Monster(monsterJsonA as MonsterJson),
       new Monster(monsterJsonA as MonsterJson)
@@ -60,13 +61,30 @@ class GameInterface {
     // deal with cost of card
     gameState.subtractFromMana(card.cost);
 
+    // TBD carry out damage
+    if (action.healthEffects) {
+      const effect = action.healthEffects.effect;
+      
+      targetIds.forEach(id => {
+        const foundMonster = gameState.getMonster(id)
+
+        if (foundMonster) {
+          foundMonster.healthEffect(effect);
+        }
+        else if (gameState.getHero().id === id) {
+          gameState.getHero().healthEffect(effect);
+        }
+        
+      })
+    }
+
     // move the card
     movedCard = gameState.getHand().removeCard(card.id);
     if (movedCard) {
       gameState.getDiscard().addCard(movedCard);
     }
 
-    // TBD carry out damage
+    
   }
 }
 
