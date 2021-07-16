@@ -23,19 +23,6 @@ export class MonsterArea {
     this.y = y;
     this.width = monsterRectangle.right - monsterRectangle.left;
     this.height = monsterRectangle.bottom - monsterRectangle.top;
-
-    // debug background
-    scene.add.existing(
-      new Phaser.GameObjects.Rectangle(
-        scene,
-        x,
-        y,
-        this.width,
-        this.height,
-        0xdddd00,
-        0.3
-      )
-    );
   }
 
   public addMonsters = (monsters: CDMonster[]) => {
@@ -66,25 +53,25 @@ export class MonsterArea {
       case 4:
         splits.push({
           x: this.x - quarterWidth,
-          y: this.y - quarterHeight,
+          y: this.y + quarterHeight,
           width: this.width / 2,
           height: this.height / 2,
         });
         splits.push({
           x: this.x + quarterWidth,
-          y: this.y - quarterHeight,
+          y: this.y + quarterHeight,
           width: this.width / 2,
           height: this.height / 2,
         });
         splits.push({
           x: this.x - quarterWidth,
-          y: this.y + quarterHeight,
+          y: this.y - quarterHeight,
           width: this.width / 2,
           height: this.height / 2,
         });
         splits.push({
           x: this.x + quarterWidth,
-          y: this.y + quarterHeight,
+          y: this.y - quarterHeight,
           width: this.width / 2,
           height: this.height / 2,
         });

@@ -53,4 +53,26 @@ export const heroYCtr = (heroRectangle.top + heroRectangle.bottom) / 2;
 export const heroWidth = heroRectangle.right - heroRectangle.left;
 export const heroHeight = heroRectangle.bottom - heroRectangle.top;
 
+export const deckRectangle = {
+  left: 10,
+  right: 90,
+  top: 510,
+  bottom: 590,
+};
+export const deckXCtr = (deckRectangle.left + deckRectangle.right) / 2;
+export const deckYCtr = (deckRectangle.top + deckRectangle.bottom) / 2;
+export const deckWidth = deckRectangle.right - deckRectangle.left;
+export const deckHeight = deckRectangle.bottom - deckRectangle.top;
+
+export const discardRectangle = {
+  left: 910,
+  right: 990,
+  top: 510,
+  bottom: 590,
+};
+export const discardXCtr = (discardRectangle.left + discardRectangle.right) / 2;
+export const discardYCtr = (discardRectangle.top + discardRectangle.bottom) / 2;
+export const discardWidth = discardRectangle.right - discardRectangle.left;
+export const discardHeight = discardRectangle.bottom - discardRectangle.top;
+
 export type callBack = () => void;
