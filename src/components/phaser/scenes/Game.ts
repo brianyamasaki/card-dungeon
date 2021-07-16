@@ -7,6 +7,8 @@ import GameState from '../../../game/GameState';
 import { CDCard } from './classes/CDCard';
 import { CDMonster } from './classes/CDMonster';
 import { CDHero } from './classes/CDHero';
+import { CDDeck } from './classes/CDDeck';
+import { CDDiscard } from './classes/CDDiscard';
 import {
   gameScreenId,
   phaserAssetsFolder,
@@ -16,6 +18,10 @@ import {
   monsterYctr,
   heroXCtr,
   heroYCtr,
+  deckXCtr,
+  deckYCtr,
+  discardXCtr,
+  discardYCtr,
 } from '../const';
 
 const backgroundImageId = 'backgroundImage';
@@ -23,6 +29,8 @@ const cardImageId = 'cardImage';
 const cardFlippedImageId = 'cardFlippedImage';
 const monsterImageId = 'monsterImage';
 const heroImageId = 'heroImage';
+const deckImageId = 'deckImage';
+const discardImageId = 'discardImage';
 
 export default class GameScreen extends Phaser.Scene {
   startButton: Button | null = null;
@@ -30,6 +38,9 @@ export default class GameScreen extends Phaser.Scene {
   gameState: GameState | null = null;
   monsterArea: MonsterArea | null = null;
   hero: CDHero | null = null;
+  deck: CDDeck | null = null;
+  discard: CDDiscard | null = null;
+  dragHighlight: Phaser.GameObjects.Rectangle | null = null;
   isDragging = false;
 
   constructor() {
@@ -48,6 +59,8 @@ export default class GameScreen extends Phaser.Scene {
       `${phaserAssetsFolder}/monsters/Bulbasaur-monster.png`
     );
     this.load.image(heroImageId, `${phaserAssetsFolder}/heroes/Hero1.png`);
+    this.load.image(deckImageId, `${phaserAssetsFolder}/Deck.png`);
+    this.load.image(discardImageId, `${phaserAssetsFolder}/Discard.png`);
   }
 
   create = () => {
@@ -81,6 +94,20 @@ export default class GameScreen extends Phaser.Scene {
           heroImageId,
           this.gameState.getHero()
         );
+        this.deck = new CDDeck(
+          this,
+          deckXCtr,
+          deckYCtr,
+          deckImageId,
+          this.gameState.getDeck()
+        );
+        this.discard = new CDDiscard(
+          this,
+          discardXCtr,
+          discardYCtr,
+          discardImageId,
+          this.gameState.getDiscard()
+        );
       }
     }
     this.input
@@ -92,16 +119,18 @@ export default class GameScreen extends Phaser.Scene {
           dropZone: Phaser.GameObjects.GameObject
         ) => {
           if (gameObject.getData('isCard') && dropZone.getData('isMonster')) {
-            // this.tweens.add({
-            //   targets: gameObject,
-            //   opacity: 1.0,
-            //   scale: 0.5,
-            //   duration: 50,
-            // });
             const monster: CDMonster = dropZone as CDMonster;
-            monster.setTint(0x00dd00);
-          } else {
-            console.log('dragenter');
+            const centerPt = monster.getCenter();
+            this.dragHighlight = new Phaser.GameObjects.Rectangle(
+              this,
+              centerPt.x,
+              centerPt.y,
+              monster.width * monster.scaleX,
+              monster.height * monster.scaleY,
+              0xffffff,
+              0.3
+            );
+            this.add.existing(this.dragHighlight);
           }
         }
       )
@@ -113,12 +142,10 @@ export default class GameScreen extends Phaser.Scene {
           dropZone: Phaser.GameObjects.GameObject
         ) => {
           if (gameObject.getData('isCard') && dropZone.getData('isMonster')) {
-            // this.tweens.add({
-            //   targets: gameObject,
-            //   opacity: 0.5,
-            //   scale: 0.3,
-            //   duration: 100,
-            // });
+            if (this.dragHighlight) {
+              this.dragHighlight.destroy();
+              this.dragHighlight = null;
+            }
           }
         }
       )
@@ -130,12 +157,8 @@ export default class GameScreen extends Phaser.Scene {
           dropZone: Phaser.GameObjects.GameObject
         ) => {
           if (gameObject.getData('isCard')) {
-            // this.tweens.add({
-            //   targets: gameObject,
-            //   opacity: 0.5,
-            //   scale: 0.3,
-            //   duration: 200,
-            // });
+            const cdCard = gameObject as CDCard;
+            cdCard.alpha = 0.2;
           }
           this.isDragging = true;
         }
@@ -147,6 +170,12 @@ export default class GameScreen extends Phaser.Scene {
           gameObject: Phaser.GameObjects.GameObject,
           dropZone: Phaser.GameObjects.GameObject
         ) => {
+          const cdCard = gameObject as CDCard;
+          cdCard.alpha = 1;
+          if (this.dragHighlight) {
+            this.dragHighlight.destroy();
+            this.dragHighlight = null;
+          }
           this.isDragging = false;
         }
       )
