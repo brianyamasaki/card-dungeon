@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import GameScreen from '../Game';
 import { Card } from '../../../../game/Card';
+import { handHeight } from '../../const';
 
 const defaultDepth = 100;
 const hoverDepth = 200;
@@ -10,7 +11,6 @@ export class CDCard extends Phaser.GameObjects.Sprite {
   flippedTexture: string = '';
   card: Card;
   scene: GameScreen;
-  originalScale = 0.5;
   dragStart = new Phaser.Geom.Point(0, 0);
 
   constructor(
@@ -26,7 +26,8 @@ export class CDCard extends Phaser.GameObjects.Sprite {
     this.card = card;
     this.setDepth(defaultDepth);
 
-    this.setScale(this.originalScale, this.originalScale);
+    const scaleFactor = handHeight / this.height;
+    this.setScale(scaleFactor, scaleFactor);
     this.setInteractive({ useHandCursor: true, draggable: true });
     scene.input.setDraggable(this);
     this.setData('isCard', true);
@@ -55,7 +56,7 @@ export class CDCard extends Phaser.GameObjects.Sprite {
 
   private onPointerOver = () => {
     this.setDepth(hoverDepth);
-    this.setTexture(this.flippedTexture);
+    // this.setTexture(this.flippedTexture);
     // this.scene.tweens.add({
     //   targets: this,
     //   scale: 0.7,
@@ -67,7 +68,7 @@ export class CDCard extends Phaser.GameObjects.Sprite {
 
   private onPointerOut = () => {
     this.setDepth(defaultDepth);
-    this.setTexture(this.faceTexture);
+    // this.setTexture(this.faceTexture);
     // this.scene.tweens.add({
     //   targets: this,
     //   scale: this.originalScale,

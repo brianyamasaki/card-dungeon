@@ -9,6 +9,7 @@ import { CDMonster } from './classes/CDMonster';
 import { CDHero } from './classes/CDHero';
 import { CDDeck } from './classes/CDDeck';
 import { CDDiscard } from './classes/CDDiscard';
+import { CDMana } from './classes/CDMana';
 import {
   gameScreenId,
   phaserAssetsFolder,
@@ -22,6 +23,7 @@ import {
   deckYCtr,
   discardXCtr,
   discardYCtr,
+  manaRectangle,
 } from '../const';
 
 const backgroundImageId = 'backgroundImage';
@@ -40,6 +42,7 @@ export default class GameScreen extends Phaser.Scene {
   hero: CDHero | null = null;
   deck: CDDeck | null = null;
   discard: CDDiscard | null = null;
+  mana: CDMana | null = null;
   dragHighlight: Phaser.GameObjects.Rectangle | null = null;
   isDragging = false;
 
@@ -52,13 +55,23 @@ export default class GameScreen extends Phaser.Scene {
       backgroundImageId,
       `${phaserAssetsFolder}GameBackground.jpg`
     );
-    this.load.image(cardImageId, `${phaserAssetsFolder}Card.png`);
+    this.load.image(cardImageId, `${phaserAssetsFolder}Cards/Fortify.png`);
     this.load.image(cardFlippedImageId, `${phaserAssetsFolder}CardFlipped.png`);
+    if (gameInterface && gameInterface.getGameState()) {
+      const gameState = gameInterface.getGameState();
+      // load monsters
+      gameState.getMonsters().forEach((monster) => {
+        const imgUrl = monster.imageUrl;
+        if (imgUrl) {
+          this.load.image(imgUrl, `${phaserAssetsFolder}${imgUrl}`);
+        }
+      });
+    }
     this.load.image(
       monsterImageId,
-      `${phaserAssetsFolder}/monsters/Bulbasaur-monster.png`
+      `${phaserAssetsFolder}/monsters/Enemy Piercer.png`
     );
-    this.load.image(heroImageId, `${phaserAssetsFolder}/heroes/Hero1.png`);
+    this.load.image(heroImageId, `${phaserAssetsFolder}/heroes/HeroCone.png`);
     this.load.image(deckImageId, `${phaserAssetsFolder}/Deck.png`);
     this.load.image(discardImageId, `${phaserAssetsFolder}/Discard.png`);
   }
@@ -107,6 +120,12 @@ export default class GameScreen extends Phaser.Scene {
           discardYCtr,
           discardImageId,
           this.gameState.getDiscard()
+        );
+        this.mana = new CDMana(
+          this,
+          manaRectangle.left,
+          manaRectangle.top,
+          this.gameState.getMana()
         );
       }
     }
