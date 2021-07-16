@@ -1,23 +1,36 @@
 import Phaser from 'phaser';
-import { gameScreenId, phaserAssetsFolder } from '../const';
-import { Button } from './gameUtils/Button';
-import GameInterface, { gameInterface } from '../../../game/GameInterface';
+import { Button } from './classes/Button';
+import { HandArea } from './classes/HandArea';
+import { MonsterArea } from './classes/MonsterArea';
+import { gameInterface } from '../../../game/GameInterface';
+import GameState from '../../../game/GameState';
+import { CDCard } from './classes/CDCard';
+import { CDMonster } from './classes/CDMonster';
+import { CDHero } from './classes/CDHero';
+import {
+  gameScreenId,
+  phaserAssetsFolder,
+  handXctr,
+  handYctr,
+  monsterXctr,
+  monsterYctr,
+  heroXCtr,
+  heroYCtr,
+} from '../const';
 
 const backgroundImageId = 'backgroundImage';
 const cardImageId = 'cardImage';
 const cardFlippedImageId = 'cardFlippedImage';
-const startButtonUpImageId = 'startButtonUpImage';
-const startButtonOverImageId = 'startButtonOverImage';
-const startButtonDownImageId = 'startButtonDownImage';
-
-export type CDCard = {
-  sprite: Phaser.GameObjects.Sprite;
-  name: string;
-};
+const monsterImageId = 'monsterImage';
+const heroImageId = 'heroImage';
 
 export default class GameScreen extends Phaser.Scene {
-  hand: CDCard[] = [];
   startButton: Button | null = null;
+  handArea: HandArea | null = null;
+  gameState: GameState | null = null;
+  monsterArea: MonsterArea | null = null;
+  hero: CDHero | null = null;
+  isDragging = false;
 
   constructor() {
     super(gameScreenId);
@@ -31,17 +44,10 @@ export default class GameScreen extends Phaser.Scene {
     this.load.image(cardImageId, `${phaserAssetsFolder}Card.png`);
     this.load.image(cardFlippedImageId, `${phaserAssetsFolder}CardFlipped.png`);
     this.load.image(
-      startButtonUpImageId,
-      `${phaserAssetsFolder}StartButton.png`
+      monsterImageId,
+      `${phaserAssetsFolder}/monsters/Bulbasaur-monster.png`
     );
-    this.load.image(
-      startButtonOverImageId,
-      `${phaserAssetsFolder}StartButtonOver.png`
-    );
-    this.load.image(
-      startButtonDownImageId,
-      `${phaserAssetsFolder}StartButtonDown.png`
-    );
+    this.load.image(heroImageId, `${phaserAssetsFolder}/heroes/Hero1.png`);
   }
 
   create = () => {
@@ -51,68 +57,110 @@ export default class GameScreen extends Phaser.Scene {
       this.cameras.main.centerY,
       backgroundImageId
     );
-
-    this.startButton = new Button(
-      this,
-      this.cameras.main.centerX,
-      this.cameras.main.centerY,
-      startButtonUpImageId
-    )
-      .setDownTexture(startButtonDownImageId)
-      .setOverTexture(startButtonOverImageId)
-      .on('pointerup', () => {
-        if (!gameInterface) {
-          new GameInterface();
-        }
-      });
-    this.add.existing(this.startButton);
-
-    // this.addCardToHand('a');
-    // arrangeCards(this.hand);
-
-    // // catch pointerup event
-    // this.input.on(
-    //   'pointerup',
-    //   () => {
-    //     if (this.hand.length >= 10) {
-    //       return;
-    //     }
-    //     this.addCardToHand('b');
-    //     arrangeCards(this.hand);
-    //   },
-    //   this
-    // );
-    this.input.on(
-      'drag',
-      function (
-        pointer: Phaser.Input.Pointer,
-        gameObject: Phaser.GameObjects.Sprite,
-        dragX: number,
-        dragY: number
-      ) {
-        gameObject.x = dragX;
-        gameObject.y = dragY;
+    this.handArea = new HandArea(this, handXctr, handYctr);
+    this.monsterArea = new MonsterArea(this, monsterXctr, monsterYctr);
+    if (gameInterface && this.handArea && this.monsterArea) {
+      this.gameState = gameInterface.getGameState();
+      if (this.gameState) {
+        const monsters = this.gameState.getMonsters();
+        const cdMonsters = monsters.map((monster) => {
+          return new CDMonster(this, 0, 0, monsterImageId, monster);
+        });
+        this.monsterArea.addMonsters(cdMonsters);
+        const cards = this.gameState.getHand().getCards();
+        const cdCards = cards.map((card) => {
+          return new CDCard(this, 0, 0, cardImageId, card).setFlippedTexture(
+            cardFlippedImageId
+          );
+        });
+        this.handArea.addCards(cdCards);
+        this.hero = new CDHero(
+          this,
+          heroXCtr,
+          heroYCtr,
+          heroImageId,
+          this.gameState.getHero()
+        );
       }
-    );
-  };
-
-  update = () => {
-    if (gameInterface) {
-      this.startButton?.setVisible(false);
     }
-  };
-
-  addCardToHand = (name: string) => {
-    let cardSprite = this.add.sprite(0, 0, cardImageId);
-    cardSprite.setInteractive({ useHandCursor: true });
-    this.input.setDraggable(cardSprite);
-    cardSprite.setScale(0.5, 0.5);
-    this.hand.push({ sprite: cardSprite, name });
-    cardSprite.on('pointerover', () => {
-      cardSprite.setDepth(1).setTexture(cardFlippedImageId);
-    });
-    cardSprite.on('pointerout', () => {
-      cardSprite.setDepth(0).setTexture(cardImageId);
-    });
+    this.input
+      .on(
+        'dragenter',
+        (
+          pointer: Phaser.Input.Pointer,
+          gameObject: Phaser.GameObjects.GameObject,
+          dropZone: Phaser.GameObjects.GameObject
+        ) => {
+          if (gameObject.getData('isCard') && dropZone.getData('isMonster')) {
+            // this.tweens.add({
+            //   targets: gameObject,
+            //   opacity: 1.0,
+            //   scale: 0.5,
+            //   duration: 50,
+            // });
+            const monster: CDMonster = dropZone as CDMonster;
+            monster.setTint(0x00dd00);
+          } else {
+            console.log('dragenter');
+          }
+        }
+      )
+      .on(
+        'dragleave',
+        (
+          pointer: Phaser.Input.Pointer,
+          gameObject: Phaser.GameObjects.GameObject,
+          dropZone: Phaser.GameObjects.GameObject
+        ) => {
+          if (gameObject.getData('isCard') && dropZone.getData('isMonster')) {
+            // this.tweens.add({
+            //   targets: gameObject,
+            //   opacity: 0.5,
+            //   scale: 0.3,
+            //   duration: 100,
+            // });
+          }
+        }
+      )
+      .on(
+        'dragstart',
+        (
+          pointer: Phaser.Input.Pointer,
+          gameObject: Phaser.GameObjects.GameObject,
+          dropZone: Phaser.GameObjects.GameObject
+        ) => {
+          if (gameObject.getData('isCard')) {
+            // this.tweens.add({
+            //   targets: gameObject,
+            //   opacity: 0.5,
+            //   scale: 0.3,
+            //   duration: 200,
+            // });
+          }
+          this.isDragging = true;
+        }
+      )
+      .on(
+        'dragend',
+        (
+          pointer: Phaser.Input.Pointer,
+          gameObject: Phaser.GameObjects.GameObject,
+          dropZone: Phaser.GameObjects.GameObject
+        ) => {
+          this.isDragging = false;
+        }
+      )
+      .on(
+        'drop',
+        (
+          pointer: Phaser.Input.Pointer,
+          gameObject: Phaser.GameObjects.GameObject,
+          dropZone: Phaser.GameObjects.GameObject
+        ) => {
+          if (gameObject.getData('isCard') && dropZone.getData('isMonster')) {
+            console.log('dropped on monster', dropZone.getData('monsterIndex'));
+          }
+        }
+      );
   };
 }
