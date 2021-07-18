@@ -53,6 +53,18 @@ export const heroYCtr = (heroRectangle.top + heroRectangle.bottom) / 2;
 export const heroWidth = heroRectangle.right - heroRectangle.left;
 export const heroHeight = heroRectangle.bottom - heroRectangle.top;
 
+export const arenaRectangle = {
+  left: 100,
+  right: 450,
+  top: paddedGameRectangle.top,
+  bottom: handRectangle.top - 10,
+};
+
+export const arenaXCtr = (arenaRectangle.left + arenaRectangle.right) / 2;
+export const arenaYCtr = (arenaRectangle.top + arenaRectangle.bottom) / 2;
+export const arenaWidth = arenaRectangle.right - arenaRectangle.left;
+export const arenaHeight = arenaRectangle.bottom - arenaRectangle.top;
+
 export const deckRectangle = {
   left: 10,
   right: 90,
@@ -74,6 +86,18 @@ export const discardXCtr = (discardRectangle.left + discardRectangle.right) / 2;
 export const discardYCtr = (discardRectangle.top + discardRectangle.bottom) / 2;
 export const discardWidth = discardRectangle.right - discardRectangle.left;
 export const discardHeight = discardRectangle.bottom - discardRectangle.top;
+
+export const endTurnRectangle = {
+  left: 910,
+  right: 990,
+  top: 450,
+  bottom: 500,
+};
+
+export const endTurnXCtr = (endTurnRectangle.left + endTurnRectangle.right) / 2;
+export const endTurnYCtr = (endTurnRectangle.top + endTurnRectangle.bottom) / 2;
+export const endTurnWidth = endTurnRectangle.right - endTurnRectangle.left;
+export const endTurnHeight = endTurnRectangle.bottom - endTurnRectangle.top;
 
 export const manaRectangle = {
   left: 10,

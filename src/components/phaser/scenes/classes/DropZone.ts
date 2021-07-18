@@ -1,53 +1,18 @@
 import Phaser from 'phaser';
 
-export class DropZone extends Phaser.GameObjects.Sprite {
-  constructor(scene: Phaser.Scene, x: number, y: number, texture: string) {
-    super(scene, x, y, texture);
+export class DropZone extends Phaser.GameObjects.Rectangle {
+  constructor(
+    scene: Phaser.Scene,
+    x: number,
+    y: number,
+    width: number,
+    height: number
+  ) {
+    super(scene, x, y, width, height);
 
     this.setInteractive({ droppable: true });
-    this.on(Phaser.Input.Events.GAMEOBJECT_DRAG_ENTER, this.onDragEnter)
-      .on(Phaser.Input.Events.GAMEOBJECT_DRAG_LEAVE, this.onDragLeave)
-      .on(Phaser.Input.Events.GAMEOBJECT_DRAG_OVER, this.onDragOver)
-      .on(Phaser.Input.Events.GAMEOBJECT_DROP, this.onDrop);
+    this.input.dropZone = true;
+    this.setData('isDropZone', true);
+    scene.add.existing(this);
   }
-
-  private onDragEnter = (
-    pointer: Phaser.Input.Pointer,
-    gameObject: Phaser.GameObjects.GameObject,
-    target: Phaser.GameObjects.GameObject
-  ) => {
-    if (target === this) {
-      console.log('drag enter');
-    }
-  };
-
-  private onDragLeave = (
-    pointer: Phaser.Input.Pointer,
-    gameObject: Phaser.GameObjects.GameObject,
-    target: Phaser.GameObjects.GameObject
-  ) => {
-    if (target === this) {
-      console.log('drag leave');
-    }
-  };
-
-  private onDragOver = (
-    pointer: Phaser.Input.Pointer,
-    gameObject: Phaser.GameObjects.GameObject,
-    target: Phaser.GameObjects.GameObject
-  ) => {
-    if (target === this) {
-      console.log('drag over');
-    }
-  };
-
-  private onDrop = (
-    pointer: Phaser.Input.Pointer,
-    gameObject: Phaser.GameObjects.GameObject,
-    target: Phaser.GameObjects.GameObject
-  ) => {
-    if (target === this) {
-      console.log('drag over');
-    }
-  };
 }

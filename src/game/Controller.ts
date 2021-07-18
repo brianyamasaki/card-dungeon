@@ -1,21 +1,35 @@
-import { Card } from './Card';
 import { CardGroup } from './CardGroup';
-import { BattleActions } from './utilities/BattleActions';
 import GameState from './GameState';
 import Hero from './Hero';
+import { Card } from './Card';
 import { Monster } from './Monster';
 
 class Controller {
-  gameState:GameState;
+  gameState: GameState;
 
-  constructor(hero: Hero, monsters: Monster[], deck: CardGroup, hand: CardGroup) {
+  constructor(
+    hero: Hero,
+    monsters: Monster[],
+    deck: CardGroup,
+    hand: CardGroup
+  ) {
     this.gameState = new GameState(hero, monsters, deck, hand);
   }
-  
 
-  public selectCard(card: Card, action: BattleActions, index?: number) {
+  public playCardInHand(card: Card, targetIds: number[] | null) {
+    const gameState = this.gameState;
+    // deal with cost of card
+    gameState.subtractFromMana(card.cost);
 
+    // move the card
+    let movedCard = gameState.getHand().removeCard(card.id);
+    if (movedCard) {
+      gameState.getDiscard().addCard(movedCard);
+    }
+
+    // TBD carry out damage
   }
+
   public getGameState() {
     return this.gameState;
   }

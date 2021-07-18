@@ -33,7 +33,7 @@ export class CDHero extends Phaser.GameObjects.Sprite {
     this.heroName = new Phaser.GameObjects.Text(
       scene,
       x - 125,
-      y - 150,
+      y - heroHeight / 2,
       hero.name,
       {
         ...nameTextStyle,
@@ -43,7 +43,7 @@ export class CDHero extends Phaser.GameObjects.Sprite {
     this.heroHealth = new Phaser.GameObjects.Text(
       scene,
       x - 125,
-      y + 120,
+      y + heroHeight / 2,
       `Health: ${hero.health.getCur()} / ${hero.health.getMax()}`,
       {
         ...statsTextStyle,
