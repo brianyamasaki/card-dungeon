@@ -24,6 +24,10 @@ export default class NumCurMax {
     this.delta = Math.max(0, this.delta + delta);
   }
 
+  public causeDamage(damage: number) {
+    this.delta = Math.max(0, this.delta - damage);
+  }
+
   public increaseMax(delta: number) {
     this.max += delta;
   }

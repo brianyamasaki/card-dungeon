@@ -1,14 +1,13 @@
 import React from 'react';
 import { Button } from 'reactstrap';
-import { useSetRecoilState, SetterOrUpdater } from 'recoil';
+import { useSetRecoilState, useRecoilValue, SetterOrUpdater } from 'recoil';
 import { RMonster } from '../../game/Monster';
 import { BattleTarget } from '../../game/utilities/BattleTarget';
 import { RAction } from '../../game/utilities/Action';
 import { RCard } from '../../game/Card';
 import { gameInterface } from '../../game/GameInterface';
-import { gameStateAtom } from './recoilState';
+import { gameStateAtom, heroIdState } from './recoilState';
 import { RGameState } from '../../game/GameState';
-
 import './CardActions.css';
 
 interface FunctionProps {
@@ -64,7 +63,8 @@ const ActionButtons = (
   action: RAction,
   monsters: RMonster[],
   card: RCard,
-  setGameState: SetterOrUpdater<RGameState>
+  setGameState: SetterOrUpdater<RGameState>,
+  heroId: number
 ) => {
   if (!gameInterface) return null;
   const monsterIds = monsters.map((monster) => monster.id);
@@ -86,7 +86,7 @@ const ActionButtons = (
       );
     case BattleTarget.TargetSelf:
     case BattleTarget.TargetHero:
-      return ActionButton(card, action, setGameState, [], 'Heal self', 0);
+      return ActionButton(card, action, setGameState, [heroId], 'Heal self', 0);
     default:
       return null;
   }
@@ -96,12 +96,13 @@ const ActionButtons = (
 // allowing those actions on each monster allowed.
 const CardActions = ({ card, monsters }: FunctionProps) => {
   const setGameState = useSetRecoilState(gameStateAtom);
+  const heroId = useRecoilValue(heroIdState)
   const actionLines = card.battleActions.actions.map(
     (action: RAction, i: number) => (
       <li key={i}>
         <div>
           <span>{action.description}</span>
-          <span>{ActionButtons(action, monsters, card, setGameState)}</span>
+          <span>{ActionButtons(action, monsters, card, setGameState, heroId)}</span>
         </div>
       </li>
     )
