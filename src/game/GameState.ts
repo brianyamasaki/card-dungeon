@@ -1,7 +1,10 @@
 import { CardGroup } from './CardGroup';
 import NumCurMax, { initRNumCurMax, RNumCurMax } from './utilities/NumCurMax';
-import { EffectsOverTurns, REffectsOverTurns } from './utilities/EffectsOverTurns';
-import Hero, {initRHero, RHero} from './Hero';
+import {
+  EffectsOverTurns,
+  REffectsOverTurns,
+} from './utilities/EffectsOverTurns';
+import Hero, { initRHero, RHero } from './Hero';
 import { Monster, RMonster } from './Monster';
 import { CardLocation, RCard } from './Card';
 
@@ -26,7 +29,7 @@ export const initRGameState: RGameState = {
   mana: initRNumCurMax,
   strengthDelta: 0,
   defenseDelta: 0,
-  damageOverTurns: [] as REffectsOverTurns[]
+  damageOverTurns: [] as REffectsOverTurns[],
 };
 
 export default class GameState {
@@ -42,7 +45,12 @@ export default class GameState {
   // Burning, Poison and other things that damage multiple points over turns get added here
   damageOverTurns: EffectsOverTurns[] = [];
 
-  constructor(hero:Hero, monsters: Monster[], deck: CardGroup, hand: CardGroup) {
+  constructor(
+    hero: Hero,
+    monsters: Monster[],
+    deck: CardGroup,
+    hand: CardGroup
+  ) {
     this.hero = hero;
     this.monsters = monsters;
 
@@ -58,7 +66,7 @@ export default class GameState {
   public getMonsters(): Monster[] {
     return this.monsters;
   }
-  
+
   public getMonster(id:number): Monster | undefined {
     return this.monsters.find(monster => (monster.id === id))
 
@@ -76,16 +84,20 @@ export default class GameState {
     return this.discard;
   }
 
+  public getMana(): NumCurMax {
+    return this.mana;
+  }
+
   public getRDeck(): RCard[] {
-    return this.deck.getCards().map(card => card.getRCard());
+    return this.deck.getCards().map((card) => card.getRCard());
   }
 
   public getRHand(): RCard[] {
-    return this.hand.getCards().map(card => card.getRCard());
+    return this.hand.getCards().map((card) => card.getRCard());
   }
 
   public getRDiscard(): RCard[] {
-    return this.discard.getCards().map(card => card.getRCard());
+    return this.discard.getCards().map((card) => card.getRCard());
   }
 
   public getRMana(): RNumCurMax {
@@ -102,18 +114,20 @@ export default class GameState {
 
   public getRGameState(): RGameState {
     const { strengthDelta, defenseDelta } = this;
-  
+
     return {
       deck: this.deck.getRCards(),
       hand: this.hand.getRCards(),
       discard: this.discard.getRCards(),
       hero: this.hero.getRHero(),
-      monsters: this.monsters.map(monster => monster.getRMonster()),
+      monsters: this.monsters.map((monster) => monster.getRMonster()),
       mana: this.mana.getRNumCurMax(),
       strengthDelta,
       defenseDelta,
-      damageOverTurns: this.damageOverTurns.map(dot => dot.getREffectsOverTurns())
-    }
+      damageOverTurns: this.damageOverTurns.map((dot) =>
+        dot.getREffectsOverTurns()
+      ),
+    };
   }
 
   public subtractFromMana(cost: number) {

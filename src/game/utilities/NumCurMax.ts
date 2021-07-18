@@ -5,8 +5,8 @@ export type RNumCurMax = {
 
 export const initRNumCurMax: RNumCurMax = {
   max: 0,
-  cur: 0
-}
+  cur: 0,
+};
 
 export default class NumCurMax {
   max = 0;
@@ -15,11 +15,11 @@ export default class NumCurMax {
     this.max = max;
   }
 
-  public setDelta(delta:number) {
-    this.delta = Math.min(0, delta);
+  public setDelta(delta: number) {
+    this.delta = Math.max(0, delta);
   }
 
-  public addToDelta(delta:number) {
+  public addToDelta(delta: number) {
     // damage is negative, healing is positive
     this.delta = Math.max(0, this.delta + delta);
   }
@@ -36,14 +36,14 @@ export default class NumCurMax {
     return this.max - this.delta;
   }
 
-  public getMax(){
+  public getMax() {
     return this.max;
   }
 
   public getRNumCurMax() {
     return {
       max: this.max,
-      cur: this.max - this.delta
+      cur: this.max - this.delta,
     };
   }
 
@@ -51,4 +51,3 @@ export default class NumCurMax {
     return `${this.getCur()} / ${this.max}`;
   }
 }
-

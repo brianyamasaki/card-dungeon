@@ -1,5 +1,9 @@
 import Phaser from 'phaser';
-import { splashScreenId, gameScreenId, phaserAssetsFolder } from '../const';
+import {
+  splashScreenId,
+  startGameScreenId,
+  phaserAssetsFolder,
+} from '../const';
 
 export default class Splash extends Phaser.Scene {
   constructor() {
@@ -36,7 +40,7 @@ export default class Splash extends Phaser.Scene {
     this.input.on(
       'pointerup',
       () => {
-        this.scene.start(gameScreenId);
+        this.scene.start(startGameScreenId);
       },
       this
     );

@@ -1,7 +1,7 @@
 {
   "name": "Leech",
-  "description":"This is a healing and attack card",
-  "imageUrl":"",
+  "description": "This is a healing and attack card",
+  "imageUrl": "Cards/Foo.png",
   "cost": 2,
   "battleActions": {
     "actionsCountMax": 2,
