@@ -28,7 +28,6 @@ export class MonsterArea {
   public addMonsters = (monsters: CDMonster[]) => {
     const initialIndex = this.monsters.length;
     monsters.forEach((monster, i: number) => {
-      this.scene.add.existing(monster);
       monster.setData('monsterIndex', initialIndex + i);
     });
     this.monsters = this.monsters.concat(monsters);
@@ -83,7 +82,7 @@ export class MonsterArea {
     this.monsters.forEach((monster: CDMonster, i: number) => {
       const info = splits[i];
       const minDim = Math.min(info.width, info.height);
-      monster.setPosition(info.x, info.y).setDisplaySize(minDim, minDim);
+      monster.setPlace(info.x, info.y, minDim);
     });
   };
 }

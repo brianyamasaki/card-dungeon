@@ -14,7 +14,6 @@ const textStyle = {
     y: 5,
   },
 };
-
 export class CDMana extends Phaser.GameObjects.Text {
   mana: NumCurMax;
 
@@ -31,7 +30,8 @@ export class CDMana extends Phaser.GameObjects.Text {
     scene.add.existing(this);
   }
 
-  update() {
-    this.setText(`${this.mana.getCur()} / ${this.mana.getMax()}`);
+  updateToGameState(mana: NumCurMax) {
+    this.setText(`Energy:\n${mana.getCur()} / ${mana.getMax()}`);
+    this.update();
   }
 }

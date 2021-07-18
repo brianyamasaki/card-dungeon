@@ -29,7 +29,7 @@ export class CDCard extends Phaser.GameObjects.Sprite {
     const scaleFactor = handHeight / this.height;
     this.setScale(scaleFactor, scaleFactor);
     this.setInteractive({ useHandCursor: true, draggable: true });
-    scene.input.setDraggable(this);
+    // scene.input.setDraggable(this);
     this.setData('isCard', true);
 
     this.on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, this.onPointerOver)
@@ -46,6 +46,17 @@ export class CDCard extends Phaser.GameObjects.Sprite {
 
   public getCard = (): Card => {
     return this.card;
+  };
+
+  public setDraggable = (currentMana: number) => {
+    const isPlayable = currentMana >= this.card.cost;
+    if (this.input && this.input.draggable) {
+      this.input.draggable = isPlayable;
+      this.setInteractive({ useHandCursor: isPlayable });
+    }
+    if (!isPlayable) {
+      this.alpha = 0.5;
+    }
   };
 
   public setPos = (x: number, y: number) => {

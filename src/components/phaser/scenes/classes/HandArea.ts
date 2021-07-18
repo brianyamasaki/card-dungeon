@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import GameState from '../../../../game/GameState';
 import { handRectangle, handHeight, handWidth, handYctr } from '../../const';
 import { CDCard } from './CDCard';
 
@@ -69,6 +70,27 @@ export class HandArea {
     this.cards.forEach((card: CDCard, i) => {
       const xCtr = i * xPerCard + xPerCardHalf;
       card.setPos(xCtr, yCtr);
+    });
+  };
+
+  findCard(id: number): CDCard | undefined {
+    return this.cards.find((cdCard) => cdCard.card.id === id);
+  }
+
+  removeCard(id: number): CDCard {
+    // this keeps all cards except the one with the id passed in.
+    const foundCard = this.findCard(id);
+    if (!foundCard) {
+      console.error(`card ${id} not found in hand`);
+    }
+    this.cards = this.cards.filter((cdCard) => cdCard.card.id !== id);
+    this.arrangeCards();
+    return foundCard || this.cards[0];
+  }
+
+  updateCards = (gameState: GameState) => {
+    this.cards.forEach((card) => {
+      card.setDraggable(gameState.getMana().getCur());
     });
   };
 }
