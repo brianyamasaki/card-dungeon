@@ -1,7 +1,7 @@
 {
-  "name": "Poison Dart",
-  "description":"This is a Card that applies poison",
-  "imageUrl":"",
+  "name": "Acid Launcher",
+  "description": "This is a Card that applies poison",
+  "imageUrl": "Cards/Acid_Launcher.png",
   "cost": 2,
   "battleActions": {
     "actionsCountMax": 1,
@@ -10,7 +10,8 @@
         "description": "Apply poison for 3 turns",
         "verb": "Poison",
         "target": "targetEnemy",
-        "healthEffects": [-4,-3,-2,-1]
+        "healthEffects": [-4, -3, -2, -1],
+        "armorUpEffects": []
       }
     ]
   }

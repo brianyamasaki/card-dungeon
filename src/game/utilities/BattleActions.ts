@@ -1,9 +1,5 @@
-import { Action, RAction, ActionJson } from "./Action";
-
-export type BattleActionsJson = {
-  actionsCountMax: number;
-  actions: ActionJson[];
-};
+import { Action, RAction } from './Action';
+import { BattleActionsJson } from '../../constJson';
 
 export type RBattleAction = {
   actionsCountMax: number;
@@ -12,8 +8,8 @@ export type RBattleAction = {
 
 export const initRBattleAction: RBattleAction = {
   actionsCountMax: 0,
-  actions: [] as RAction[]
-}
+  actions: [] as RAction[],
+};
 
 export class BattleActions {
   actionsCountMax: number;
@@ -22,16 +18,18 @@ export class BattleActions {
   constructor(json: BattleActionsJson) {
     this.actionsCountMax = json.actionsCountMax;
     if (this.actionsCountMax < 1) {
-      console.error(`actionsCountMax can't be less than 1: found ${this.actionsCountMax}`);
+      console.error(
+        `actionsCountMax can't be less than 1: found ${this.actionsCountMax}`
+      );
     }
-    this.actions = json.actions.map(actionJson => new Action(actionJson));
+    this.actions = json.actions.map((actionJson) => new Action(actionJson));
   }
 
   public getRBattleAction(): RBattleAction {
     const { actionsCountMax } = this;
     return {
       actionsCountMax,
-      actions: this.actions.map(action => action.getRAction())
+      actions: this.actions.map((action) => action.getRAction()),
     };
   }
 }

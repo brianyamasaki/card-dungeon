@@ -5,37 +5,55 @@ import { CDCard } from './CDCard';
 export class CDDiscard extends Phaser.GameObjects.Sprite {
   scene: Phaser.Scene;
   countText: Phaser.GameObjects.Text;
-  cdCards: CDCard[];
+  cdCards: CDCard[] = [];
 
-  constructor(
-    scene: Phaser.Scene,
-    x: number,
-    y: number,
-    texture: string,
-    cdCards: CDCard[]
-  ) {
+  constructor(scene: Phaser.Scene, x: number, y: number, texture: string) {
     super(scene, x, y, texture);
     this.scene = scene;
     scene.add.existing(this);
-    this.cdCards = cdCards;
     this.countText = new Phaser.GameObjects.Text(
       scene,
       x - 4,
       y - 25,
-      cdCards.length.toString(),
+      '0',
       nameTextStyle
     );
     this.setDisplaySize(discardWidth, discardHeight);
     scene.add.existing(this.countText);
   }
 
-  addCard(cdCard: CDCard) {
-    cdCard.visible = false;
-    this.cdCards.push(cdCard);
+  updateCount() {
+    this.countText.setText(this.cdCards.length.toString());
+    return this;
   }
 
-  updateCount(count: number) {
-    this.countText.setText(count.toString());
+  // Non-Phaser methods
+
+  addCard(cdCard: CDCard) {
+    // Non-Phaser code
+    this.cdCards.push(cdCard);
+    // Phaser code to hide the card
+    cdCard.visible = false;
+    this.updateCount();
+    return this;
+  }
+
+  addCards(cdCards: CDCard[]) {
+    // Non-Phaser code
+    this.cdCards = this.cdCards.concat(cdCards);
+    // Phaser code to hide the cards
+    cdCards.forEach((card) => {
+      card.visible = false;
+    });
+    this.updateCount();
+    return this;
+  }
+
+  removeAllCards(): CDCard[] {
+    const retval = this.cdCards;
+    this.cdCards = [];
+    this.countText.setText('0');
+    return retval;
   }
 
   destroy() {

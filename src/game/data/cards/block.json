@@ -1,7 +1,7 @@
 {
-  "name": "Block",
-  "description":"This is armor generating card",
-  "imageUrl":"",
+  "name": "Fortify",
+  "description": "This is armor generating card",
+  "imageUrl": "Cards/Fortify.png",
   "cost": 1,
   "battleActions": {
     "actionsCountMax": 1,
@@ -10,7 +10,8 @@
         "description": "Gain 5 armor this turn. (armorUp needs to be added as an action)",
         "verb": "Gain Armor",
         "target": "targetSelf",
-        "armorUpEffects":[5]
+        "healthEffects": [],
+        "armorUpEffects": [5]
       }
     ]
   }

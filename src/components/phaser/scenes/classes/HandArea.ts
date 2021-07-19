@@ -1,5 +1,4 @@
 import Phaser from 'phaser';
-import GameState from '../../../../game/GameState';
 import { handRectangle, handHeight, handWidth, handYctr } from '../../const';
 import { CDCard } from './CDCard';
 
@@ -11,14 +10,6 @@ const cardPos: number[][] = [
   [-0.2906, -0.0969, 0.0969, 0.2906],
   [-0.4844, -0.2906, -0.0969, 0.0969, 0.2906, 0.4844],
 ];
-// const cardPos: number[][] = [
-//   [],
-//   [0.5],
-//   [0.4031, 0.5969],
-//   [0.3063, 0.5, 0.6938],
-//   [0.2094, 0.4031, 0.5969, 0.7906],
-//   [0.1125, 0.3063, 0.5, 0.6938, 0.8875],
-// ];
 
 export class HandArea {
   cards: CDCard[];
@@ -48,10 +39,11 @@ export class HandArea {
 
   addCards = (cards: CDCard[]) => {
     this.cards = this.cards.concat(cards);
-    cards.forEach((card) => {
-      this.scene.add.existing(card);
-    });
     this.arrangeCards();
+    cards.forEach((card) => {
+      card.visible = true;
+      card.addToScene(this.scene);
+    });
   };
 
   arrangeCards = () => {
@@ -74,7 +66,7 @@ export class HandArea {
   };
 
   findCard(id: number): CDCard | undefined {
-    return this.cards.find((cdCard) => cdCard.card.id === id);
+    return this.cards.find((cdCard) => cdCard.id === id);
   }
 
   removeCard(id: number): CDCard {
@@ -83,14 +75,20 @@ export class HandArea {
     if (!foundCard) {
       console.error(`card ${id} not found in hand`);
     }
-    this.cards = this.cards.filter((cdCard) => cdCard.card.id !== id);
+    this.cards = this.cards.filter((cdCard) => cdCard.id !== id);
     this.arrangeCards();
     return foundCard || this.cards[0];
   }
 
-  updateCards = (gameState: GameState) => {
+  removeAllCards(): CDCard[] {
+    const retval = this.cards;
+    this.cards = [];
+    return retval;
+  }
+
+  updateCards = (manaCur: number) => {
     this.cards.forEach((card) => {
-      card.setDraggable(gameState.getMana().getCur());
+      card.setDraggable(manaCur);
     });
   };
 }

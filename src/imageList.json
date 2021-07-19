@@ -1,0 +1,17 @@
+{
+  "errorCardImage": "Cars/Error_Card.png",
+  "cardImages": [
+    "Cards/Fortify.png",
+    "Cards/Zap.png",
+    "Cards/Steal_Parts.png",
+    "Cards/Acid_Launcher.png",
+    "Cards/Error_Card.png"
+  ],
+  "heroImages": ["heroes/Hero1.png", "heroes/HeroCone.png"],
+  "monsterImages": [
+    "monsters/Enemy Heavy Fighter.png",
+    "monsters/Enemy Light Probe.png",
+    "monsters/Enemy Piercer.png",
+    "monsters/Enemy Squid.png"
+  ]
+}

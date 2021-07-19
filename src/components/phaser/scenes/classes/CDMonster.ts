@@ -1,32 +1,46 @@
 import Phaser from 'phaser';
-import { Monster } from '../../../../game/Monster';
-import { nameTextStyle, statsTextStyle } from '../../const';
+import { nameTextStyle, statsTextStyle, monsterIdMin } from '../../const';
+import { MonsterJson } from '../../../../constJson';
+import NumCurMax from '../../../../game/utilities/NumCurMax';
+import { BattleActions } from '../../../../game/utilities/BattleActions';
 
 export class CDMonster extends Phaser.GameObjects.Sprite {
-  monster: Monster;
+  // Phaser members
   monsterName: Phaser.GameObjects.Text;
   monsterHealth: Phaser.GameObjects.Text;
+  // non-Phaser members
+  private static currentId = monsterIdMin;
+  id: number;
+  name: string;
+  description: string;
+  imageUrl: string;
+  armor: number;
+  health: NumCurMax;
+  battleActions: BattleActions;
 
-  constructor(
-    scene: Phaser.Scene,
-    x: number,
-    y: number,
-    texture: string,
-    monster: Monster
-  ) {
-    super(scene, x, y, texture);
-    this.monster = monster;
+  constructor(scene: Phaser.Scene, x: number, y: number, json: MonsterJson) {
+    super(scene, x, y, json.imageUrl);
     this.setInteractive({ droppable: true });
     this.input.dropZone = true;
 
     this.setData('isMonster', true);
 
     scene.add.existing(this);
+    // non-Phaser initialization
+    this.id = CDMonster.currentId++;
+    this.name = json.name;
+    this.description = json.description;
+    this.imageUrl = json.imageUrl;
+    this.armor = json.armor;
+    this.health = new NumCurMax(json.health);
+    this.battleActions = new BattleActions(json.battleActions);
+
+    // Phaser initialization
     this.monsterName = new Phaser.GameObjects.Text(
       scene,
       x - 125,
       y,
-      monster.name,
+      this.name,
       {
         ...nameTextStyle,
         fixedWidth: 250,
@@ -36,7 +50,7 @@ export class CDMonster extends Phaser.GameObjects.Sprite {
       scene,
       x - 125,
       y,
-      `Health: ${monster.health.getCur()} / ${monster.health.getMax()}`,
+      `Health: ${this.health.getCur()} / ${this.health.getMax()}`,
       {
         ...statsTextStyle,
         fixedWidth: 250,

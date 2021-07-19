@@ -1,15 +1,13 @@
 import Phaser from 'phaser';
 import { HandArea } from './classes/HandArea';
 import { MonsterArea } from './classes/MonsterArea';
-import { gameInterface } from '../../../game/GameInterface';
-import GameState from '../../../game/GameState';
-import { Card } from '../../../game/Card';
 import { CDCard } from './classes/CDCard';
 import { CDMonster } from './classes/CDMonster';
 import { CDHero } from './classes/CDHero';
 import { CDDeck } from './classes/CDDeck';
 import { CDDiscard } from './classes/CDDiscard';
 import { CDMana } from './classes/CDMana';
+import { ImageLibrary } from '../classes/ImageLibrary';
 import {
   gameScreenId,
   phaserAssetsFolder,
@@ -33,18 +31,17 @@ import {
 } from '../const';
 import { TextButton } from './classes/TextButton';
 import { DropZone } from './classes/DropZone';
+import { AssetLibrary } from '../classes/AssetLibrary';
+import { CDController } from './classes/CDContoller';
 
 const backgroundImageId = 'backgroundImage';
-const cardImageId = 'cardImage';
-const cardFlippedImageId = 'cardFlippedImage';
-const monsterImageId = 'monsterImage';
-const heroImageId = 'heroImage';
 const deckImageId = 'deckImage';
 const discardImageId = 'discardImage';
 
 export default class GameScreen extends Phaser.Scene {
+  imageLibrary: ImageLibrary;
+  assetLibrary: AssetLibrary;
   handArea: HandArea | null = null;
-  gameState: GameState | null = null;
   monsterArea: MonsterArea | null = null;
   hero: CDHero | null = null;
   deck: CDDeck | null = null;
@@ -54,9 +51,12 @@ export default class GameScreen extends Phaser.Scene {
   arenaDropZone: Phaser.GameObjects.Rectangle | null = null;
   dragHighlight: Phaser.GameObjects.Rectangle | null = null;
   isDragging = false;
+  controller: CDController | null = null;
 
   constructor() {
     super(gameScreenId);
+    this.imageLibrary = new ImageLibrary();
+    this.assetLibrary = new AssetLibrary();
   }
 
   preload() {
@@ -64,25 +64,10 @@ export default class GameScreen extends Phaser.Scene {
       backgroundImageId,
       `${phaserAssetsFolder}GameBackground.jpg`
     );
-    this.load.image(cardImageId, `${phaserAssetsFolder}Cards/Fortify.png`);
-    this.load.image(cardFlippedImageId, `${phaserAssetsFolder}CardFlipped.png`);
-    if (gameInterface && gameInterface.getGameState()) {
-      const gameState = gameInterface.getGameState();
-      // load monsters
-      gameState.getMonsters().forEach((monster) => {
-        const imgUrl = monster.imageUrl;
-        if (imgUrl) {
-          this.load.image(imgUrl, `${phaserAssetsFolder}${imgUrl}`);
-        }
-      });
-    }
-    this.load.image(
-      monsterImageId,
-      `${phaserAssetsFolder}/monsters/Enemy Piercer.png`
-    );
-    this.load.image(heroImageId, `${phaserAssetsFolder}/heroes/HeroCone.png`);
     this.load.image(deckImageId, `${phaserAssetsFolder}/Deck.png`);
     this.load.image(discardImageId, `${phaserAssetsFolder}/Discard.png`);
+    this.imageLibrary.preload(this);
+    this.assetLibrary.preload();
   }
 
   create = () => {
@@ -94,73 +79,65 @@ export default class GameScreen extends Phaser.Scene {
     );
     this.handArea = new HandArea(this, handXctr, handYctr);
     this.monsterArea = new MonsterArea(this, monsterXctr, monsterYctr);
-    if (gameInterface && this.handArea && this.monsterArea) {
-      this.gameState = gameInterface.getGameState();
-      if (this.gameState) {
-        const monsters = this.gameState.getMonsters();
-        const cdMonsters = monsters.map((monster) => {
-          return new CDMonster(this, 0, 0, monsterImageId, monster);
-        });
-        this.monsterArea.addMonsters(cdMonsters);
-        const cdCards = this.createCdCards(this.gameState.getHand().getCards());
-        this.handArea.addCards(cdCards);
-        this.hero = new CDHero(
-          this,
-          heroXCtr,
-          heroYCtr,
-          heroImageId,
-          this.gameState.getHero()
-        );
-        this.deck = new CDDeck(
-          this,
-          deckXCtr,
-          deckYCtr,
-          deckImageId,
-          this.createCdCards(this.gameState.getDeck().cards)
-        );
-        this.discard = new CDDiscard(
-          this,
-          discardXCtr,
-          discardYCtr,
-          discardImageId,
-          this.createCdCards(this.gameState.getDiscard().cards)
-        );
-        this.mana = new CDMana(
-          this,
-          manaRectangle.left,
-          manaRectangle.top,
-          this.gameState.getMana()
-        );
-        this.endTurnButton = new TextButton(
-          this,
-          endTurnRectangle.left,
-          endTurnRectangle.top,
-          'End Turn',
-          endTurnWidth,
-          this.endTurn
-        );
-        this.arenaDropZone = new DropZone(
-          this,
-          arenaXCtr,
-          arenaYCtr,
-          arenaWidth,
-          arenaHeight
-        ).setData('isArena', true);
-        this.setInputEvents();
-      }
-    }
-  };
-
-  endTurn(): void {
-    console.log('end turn pressed');
-  }
-
-  private createCdCards = (cards: Card[]): CDCard[] => {
-    return cards.map((card) => {
-      return new CDCard(this, 0, 0, cardImageId, card).setFlippedTexture(
-        cardFlippedImageId
+    if (this.handArea && this.monsterArea) {
+      this.hero = new CDHero(
+        this,
+        heroXCtr,
+        heroYCtr,
+        this.assetLibrary.getRandomHero()
       );
-    });
+      this.discard = new CDDiscard(
+        this,
+        discardXCtr,
+        discardYCtr,
+        discardImageId
+      );
+      this.mana = new CDMana(this, manaRectangle.left, manaRectangle.top, 3);
+      this.deck = new CDDeck(this, deckXCtr, deckYCtr, deckImageId);
+      this.controller = new CDController(
+        this.imageLibrary,
+        this.assetLibrary,
+        this.handArea,
+        this.monsterArea,
+        this.hero,
+        this.deck,
+        this.discard,
+        this.mana
+      );
+      let cdCards = this.assetLibrary
+        .getAllCardsJson()
+        .map((json) => new CDCard(this, 0, 0, json));
+      cdCards = cdCards.concat(
+        this.assetLibrary
+          .getAllCardsJson()
+          .map((json) => new CDCard(this, 0, 0, json))
+      );
+      this.controller
+        .startGame(
+          [
+            new CDMonster(this, 0, 0, this.assetLibrary.getRandomMonster()),
+            new CDMonster(this, 0, 0, this.assetLibrary.getRandomMonster()),
+          ],
+          cdCards
+        )
+        .startTurn();
+      this.endTurnButton = new TextButton(
+        this,
+        endTurnRectangle.left,
+        endTurnRectangle.top,
+        'End Turn',
+        endTurnWidth,
+        this.controller.endTurn
+      );
+      this.arenaDropZone = new DropZone(
+        this,
+        arenaXCtr,
+        arenaYCtr,
+        arenaWidth,
+        arenaHeight
+      ).setData('isArena', true);
+      this.setInputEvents();
+    }
   };
 
   private setInputEvents = () => {
@@ -174,7 +151,7 @@ export default class GameScreen extends Phaser.Scene {
         ) => {
           if (gameObject.getData('isCard')) {
             if (dropZone.getData('isMonster')) {
-              // dropped on a monster
+              // dragged on a monster
               const monster: CDMonster = dropZone as CDMonster;
               const centerPt = monster.getCenter();
               this.addDragHighlight(
@@ -184,7 +161,7 @@ export default class GameScreen extends Phaser.Scene {
                 monster.height * monster.scaleY
               );
             } else if (dropZone.getData('isArena')) {
-              // dropped on game arena
+              // dragged on game arena
               this.addDragHighlight(
                 arenaXCtr,
                 arenaYCtr,
@@ -248,12 +225,10 @@ export default class GameScreen extends Phaser.Scene {
               const cdMonster = dropZone as CDMonster;
 
               this.moveHandCardToDiscard(cdCard, cdMonster);
-              this.refreshGameState();
               this.removeDragHighlight();
             } else if (dropZone.getData('isArena')) {
               // dropped on arena
               this.moveHandCardToDiscard(cdCard, null);
-              this.refreshGameState();
               this.removeDragHighlight();
             }
           }
@@ -287,32 +262,12 @@ export default class GameScreen extends Phaser.Scene {
   };
 
   // handles moving CDCard from hand to Discard
-  private moveHandCardToDiscard = (cdCard: CDCard, cdMonster: CDMonster | null) => {
-    if (this.handArea && this.discard && gameInterface) {
-      const id = cdCard.card.id;
-      let ids: number[] | null;
-      if (cdMonster) {
-        ids = [cdMonster.monster.id];
-      } else {
-        ids = null
-      }
-        // following moves the cards in Game engine
-        gameInterface.controller.playCardInHand(cdCard.card, ids);  
-
-      // we move the cdCard in the Phaser engine
-      this.discard.addCard(this.handArea.removeCard(id));
-    }
-  };
-
-  private refreshGameState = () => {
-    const gameState = this.gameState;
-    if (gameState) {
-      this.handArea?.updateCards(gameState);
-      // this.monsterArea
-      // this.hero
-      this.deck?.updateCount(gameState.getDeck().cards.length);
-      this.discard?.updateCount(gameState.getDiscard().cards.length);
-      this.mana?.updateToGameState(gameState.getMana());
+  private moveHandCardToDiscard = (
+    cdCard: CDCard,
+    cdMonster: CDMonster | null
+  ) => {
+    if (this.controller) {
+      this.controller.playCardInHand(cdCard, cdMonster ? cdMonster.id : null);
     }
   };
 }

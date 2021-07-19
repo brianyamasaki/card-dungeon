@@ -1,14 +1,6 @@
-import { EffectsOverTurns, REffectsOverTurns } from "./EffectsOverTurns";
+import { EffectsOverTurns, REffectsOverTurns } from './EffectsOverTurns';
 import { BattleTarget, objBattleTarget } from './BattleTarget';
-
-
-export type ActionJson = {
-  description: string;
-  verb: string;
-  target: string;
-  healthEffects: number[];
-  armorUpEffects: number[];
-}
+import { ActionJson } from '../../constJson';
 
 export type RAction = {
   description: string;
@@ -26,20 +18,27 @@ export class Action {
   armorUpEffects: EffectsOverTurns | null;
 
   constructor(json: ActionJson) {
-    if (json.description === undefined || json.verb === undefined ) {
-      console.error(`description or verb cannot be empty`)
+    if (json.description === undefined || json.verb === undefined) {
+      console.error(`description or verb cannot be empty`);
     }
     this.description = json.description;
     this.verb = json.verb;
     if (objBattleTarget[json.target as BattleTarget]) {
       this.target = json.target as BattleTarget;
-    } else
-    {
+    } else {
       this.target = BattleTarget.TargetAllEnemies;
       console.error(`${json.target} is not a valid target`);
     }
-    this.healthEffects = new EffectsOverTurns(this.description, this.target, json.healthEffects || []);
-    this.armorUpEffects = new EffectsOverTurns(this.description, this.target, json.armorUpEffects || []);
+    this.healthEffects = new EffectsOverTurns(
+      this.description,
+      this.target,
+      json.healthEffects || []
+    );
+    this.armorUpEffects = new EffectsOverTurns(
+      this.description,
+      this.target,
+      json.armorUpEffects || []
+    );
   }
 
   public getRAction(): RAction {
@@ -47,8 +46,12 @@ export class Action {
       description: this.description,
       verb: this.verb,
       target: this.target,
-      healthEffects: this.healthEffects ? this.healthEffects.getREffectsOverTurns() : null,
-      armorUpEffects: this.armorUpEffects ? this.armorUpEffects.getREffectsOverTurns() : null
-    }
+      healthEffects: this.healthEffects
+        ? this.healthEffects.getREffectsOverTurns()
+        : null,
+      armorUpEffects: this.armorUpEffects
+        ? this.armorUpEffects.getREffectsOverTurns()
+        : null,
+    };
   }
 }
