@@ -47,7 +47,9 @@ export class CDController {
   }
 
   startTurn() {
-    this.handArea.addCards(this.deck.removeCards(5));
+    this.handArea
+      .addCards(this.deck.removeCards(5))
+      .updateCards(this.mana.getCur());
     return this;
   }
 
@@ -58,14 +60,17 @@ export class CDController {
     this.handArea.updateCards(this.mana.getCur());
   }
 
-  // following must be bound
+  // following must be bound because it's used in a callback
   endTurn = () => {
     // what do we do here?
 
-    console.log('end turn');
+    // move cards from hand to discard
     this.discard.addCards(this.handArea.removeAllCards());
 
     this.mana.resetMana();
+
+    // prepare for the player
+    this.startTurn();
   };
 
   getImageLibrary() {

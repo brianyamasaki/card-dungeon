@@ -51,13 +51,11 @@ export class CDCard extends Phaser.GameObjects.Sprite {
 
   public setDraggable = (currentMana: number) => {
     const isPlayable = currentMana >= this.cost;
-    if (this.input && this.input.draggable) {
+    if (this.input && this.input.draggable !== undefined) {
       this.input.draggable = isPlayable;
       this.setInteractive({ useHandCursor: isPlayable });
     }
-    if (!isPlayable) {
-      this.alpha = 0.5;
-    }
+    this.alpha = isPlayable ? 1.0 : 0.5;
     return this;
   };
 

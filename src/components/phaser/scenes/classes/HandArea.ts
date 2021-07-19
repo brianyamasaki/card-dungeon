@@ -2,15 +2,6 @@ import Phaser from 'phaser';
 import { handRectangle, handHeight, handWidth, handYctr } from '../../const';
 import { CDCard } from './CDCard';
 
-const cardPos: number[][] = [
-  [],
-  [0],
-  [-0.0969, 0.0969],
-  [-0.1938, 0, 0.1938],
-  [-0.2906, -0.0969, 0.0969, 0.2906],
-  [-0.4844, -0.2906, -0.0969, 0.0969, 0.2906, 0.4844],
-];
-
 export class HandArea {
   cards: CDCard[];
   x: number;
@@ -44,19 +35,27 @@ export class HandArea {
       card.visible = true;
       card.addToScene(this.scene);
     });
+    return this;
   };
 
   arrangeCards = () => {
     const yCtr = handYctr;
-    if (this.cards.length < cardPos.length) {
-      this.cards.forEach((card: CDCard, i) => {
-        const xCtr =
-          (cardPos[this.cards.length][i] + 0.5) * handWidth +
-          handRectangle.left;
-        card.setPos(xCtr, yCtr);
+    const { cards } = this;
+    if (cards.length === 0) {
+      return;
+    }
+    const cardWidth = cards[0].displayWidth + 5;
+    const cardsWidth = cards.length * cardWidth;
+    console.log(handWidth);
+    if (cardsWidth <= handWidth) {
+      const paddingX =
+        (handWidth - cardsWidth) / 2 + handRectangle.left + cardWidth / 2;
+      this.cards.forEach((card: CDCard, i: number) => {
+        card.setPos(paddingX + i * cardWidth, yCtr);
       });
       return;
     }
+
     const xPerCard = handWidth / this.cards.length;
     const xPerCardHalf = xPerCard / 2;
     this.cards.forEach((card: CDCard, i) => {

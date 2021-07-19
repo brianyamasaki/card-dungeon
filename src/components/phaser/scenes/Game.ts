@@ -112,6 +112,11 @@ export default class GameScreen extends Phaser.Scene {
           .getAllCardsJson()
           .map((json) => new CDCard(this, 0, 0, json))
       );
+      cdCards = cdCards.concat(
+        this.assetLibrary
+          .getAllCardsJson()
+          .map((json) => new CDCard(this, 0, 0, json))
+      );
       this.controller
         .startGame(
           [
