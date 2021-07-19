@@ -60,13 +60,26 @@ class GameInterface {
     // deal with cost of card
     gameState.subtractFromMana(card.cost);
 
+    // TBD carry out damage
+    if (action.healthEffects) {
+      const effect = action.healthEffects.effect;
+
+      targetIds.forEach((id) => {
+        const foundMonster = gameState.getMonster(id);
+
+        if (foundMonster) {
+          foundMonster.healthEffect(effect);
+        } else if (gameState.getHero().id === id) {
+          gameState.getHero().healthEffect(effect);
+        }
+      });
+    }
+
     // move the card
     movedCard = gameState.getHand().removeCard(card.id);
     if (movedCard) {
       gameState.getDiscard().addCard(movedCard);
     }
-
-    // TBD carry out damage
   }
 }
 

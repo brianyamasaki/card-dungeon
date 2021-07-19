@@ -67,6 +67,11 @@ export default class GameState {
     return this.monsters;
   }
 
+  public getMonster(id:number): Monster | undefined {
+    return this.monsters.find(monster => (monster.id === id))
+
+  }
+  
   public getDeck(): CardGroup {
     return this.deck;
   }

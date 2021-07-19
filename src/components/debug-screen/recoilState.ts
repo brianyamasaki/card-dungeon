@@ -86,3 +86,10 @@ export const armorState = selector({
   }
 });
 
+export const heroIdState = selector ({
+  key: 'heroIdState',
+  get: ({get}) => {
+    const gameState = get(gameStateAtom);
+    return gameState.hero.id;
+  }
+})

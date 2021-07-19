@@ -59,4 +59,7 @@ export class Monster {
   }
 
   // Getters and Setters TBD
+  public healthEffect(effect: number) {
+    this.health.causeDamage(effect);
+  }
 }
