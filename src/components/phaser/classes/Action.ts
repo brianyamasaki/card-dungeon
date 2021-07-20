@@ -1,6 +1,8 @@
 import { EffectsOverTurns, REffectsOverTurns } from './EffectsOverTurns';
 import { BattleTarget, objBattleTarget } from './BattleTarget';
-import { ActionJson } from '../../constJson';
+import { ActionJson } from '../../../constJson';
+import { CDController } from '../scenes/classes/CDContoller';
+import { CDMonster } from '../scenes/classes/CDMonster';
 
 export type RAction = {
   description: string;
@@ -40,6 +42,24 @@ export class Action {
       json.armorUpEffects || []
     );
   }
+
+  public actOnMonster = (controller: CDController, id: number) => {
+    const { monsterArea } = controller;
+    let monsters: CDMonster[] = [];
+    switch (this.target) {
+      case BattleTarget.TargetEnemy:
+        monsters = monsterArea.findMonsters([id]);
+        break;
+      case BattleTarget.TargetAllEnemies:
+        monsters = monsterArea.findMonsters(null);
+        break;
+      default:
+        return;
+    }
+    monsters.forEach((monster) => {
+      // monster.
+    });
+  };
 
   public getRAction(): RAction {
     return {

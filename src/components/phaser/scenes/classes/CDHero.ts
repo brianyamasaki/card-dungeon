@@ -8,8 +8,9 @@ import {
   statsTextStyle,
 } from '../../const';
 import { HeroJson } from '../../../../constJson';
-import NumCurMax from '../../../../game/utilities/NumCurMax';
-import { EffectsOverTurns } from '../../../../game/utilities/EffectsOverTurns';
+import NumCurMax from '../../classes/NumCurMax';
+import { EffectsOverTurns } from '../../classes/EffectsOverTurns';
+import { Action } from '../../classes/Action';
 
 export class CDHero extends Phaser.GameObjects.Sprite {
   scene: Phaser.Scene;
@@ -25,10 +26,10 @@ export class CDHero extends Phaser.GameObjects.Sprite {
   description: string;
   imageUrl: string;
   health: NumCurMax;
-  armor: number;
+  armor: NumCurMax;
   strengthDelta: number = 0;
   defenseDelta: number = 0;
-  effectsOverTurns: EffectsOverTurns[];
+  healthEffectsList: EffectsOverTurns[] = [];
 
   constructor(scene: GameScreen, x: number, y: number, json: HeroJson) {
     super(scene, x, y, json.imageUrl);
@@ -46,9 +47,8 @@ export class CDHero extends Phaser.GameObjects.Sprite {
     this.name = json.name;
     this.description = json.description || '';
     this.imageUrl = json.imageUrl;
-    this.armor = json.armor;
+    this.armor = new NumCurMax(json.armor);
     this.health = new NumCurMax(json.health);
-    this.effectsOverTurns = [];
 
     // Phaser initialization
     this.heroName = new Phaser.GameObjects.Text(
@@ -79,5 +79,20 @@ export class CDHero extends Phaser.GameObjects.Sprite {
     this.heroHealth.destroy();
     this.heroName.destroy();
     super.destroy();
+  }
+
+  // non-Phaser methods
+  acceptAction(action: Action) {
+    const { healthEffects, armorUpEffects } = action;
+    if (healthEffects) {
+      if (healthEffects.effectsLength() > 1) {
+        this.healthEffectsList.push(healthEffects);
+      }
+      this.health.addToDelta(healthEffects.getDamage());
+    }
+    if (armorUpEffects) {
+      // currently we don't support long term armor ups
+      this.armor.addToDelta(armorUpEffects.getDamage());
+    }
   }
 }

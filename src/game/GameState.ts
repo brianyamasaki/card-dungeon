@@ -1,9 +1,12 @@
 import { CardGroup } from './CardGroup';
-import NumCurMax, { initRNumCurMax, RNumCurMax } from './utilities/NumCurMax';
+import NumCurMax, {
+  initRNumCurMax,
+  RNumCurMax,
+} from '../components/phaser/classes/NumCurMax';
 import {
   EffectsOverTurns,
   REffectsOverTurns,
-} from './utilities/EffectsOverTurns';
+} from '../components/phaser/classes/EffectsOverTurns';
 import Hero, { initRHero, RHero } from './Hero';
 import { Monster, RMonster } from './Monster';
 import { CardLocation, RCard } from './Card';
@@ -67,11 +70,10 @@ export default class GameState {
     return this.monsters;
   }
 
-  public getMonster(id:number): Monster | undefined {
-    return this.monsters.find(monster => (monster.id === id))
-
+  public getMonster(id: number): Monster | undefined {
+    return this.monsters.find((monster) => monster.id === id);
   }
-  
+
   public getDeck(): CardGroup {
     return this.deck;
   }

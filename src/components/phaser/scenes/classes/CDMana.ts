@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import NumCurMax from '../../../../game/utilities/NumCurMax';
+import NumCurMax from '../../classes/NumCurMax';
 import { manaWidth, manaHeight } from '../../const';
 
 const textStyle = {

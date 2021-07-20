@@ -57,6 +57,12 @@ export class CDController {
     // moves the card to discard
     this.discard.addCard(this.handArea.removeCard(cdCard.id));
     this.mana.useMana(cdCard.cost);
+
+    // Cause damage
+    const monsters = this.monsterArea.findMonsters(id ? [id] : null);
+    cdCard.battleActions.playCard(monsters, this.hero);
+
+    // Phaser code
     this.handArea.updateCards(this.mana.getCur());
   }
 
@@ -67,17 +73,25 @@ export class CDController {
     // move cards from hand to discard
     this.discard.addCards(this.handArea.removeAllCards());
 
+    // if (action.healthEffects) {
+    //   const effect = action.healthEffects.effect;
+
+    //   targetIds.forEach((id) => {
+    //     const foundMonster = gameState.getMonster(id);
+
+    //     if (foundMonster) {
+    //       foundMonster.healthEffect(effect);
+    //     } else if (gameState.getHero().id === id) {
+    //       gameState.getHero().healthEffect(effect);
+    //     }
+    //   });
+    // }
+
     this.mana.resetMana();
+
+    // increment Effects indexes
 
     // prepare for the player
     this.startTurn();
   };
-
-  getImageLibrary() {
-    return this.imageLibrary;
-  }
-
-  getAssetLibrary() {
-    return this.assetLibrary;
-  }
 }

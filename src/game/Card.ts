@@ -1,4 +1,7 @@
-import { BattleActions, RBattleAction } from './utilities/BattleActions';
+import {
+  BattleActions,
+  RBattleAction,
+} from '../components/phaser/classes/BattleActions';
 import { CardJson } from '../constJson';
 import { cardIdMin } from '../components/phaser/const';
 

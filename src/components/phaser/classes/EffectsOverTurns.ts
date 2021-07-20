@@ -1,15 +1,15 @@
-import { BattleTarget } from "./BattleTarget";
+import { BattleTarget } from './BattleTarget';
 
 export type REffectsOverTurns = {
   description: string;
-  target: BattleTarget
-  effect: number
-}
+  target: BattleTarget;
+  effect: number;
+};
 
-export const initREffectsOverTurns:REffectsOverTurns = {
+export const initREffectsOverTurns: REffectsOverTurns = {
   description: '',
   target: BattleTarget.TargetAllEnemies,
-  effect: 0
+  effect: 0,
 };
 
 export class EffectsOverTurns {
@@ -42,8 +42,12 @@ export class EffectsOverTurns {
     return this.effects[this.currentIndex];
   }
 
+  public effectsLength() {
+    return this.effects.length;
+  }
+
   public getREffectsOverTurns(): REffectsOverTurns {
-    const { description, target} = this;
+    const { description, target } = this;
     this.getDamage();
     return {
       description,
@@ -51,5 +55,4 @@ export class EffectsOverTurns {
       effect: this.getDamage(),
     };
   }
-
 }

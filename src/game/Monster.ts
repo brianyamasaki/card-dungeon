@@ -1,5 +1,8 @@
-import { BattleActions, RBattleAction } from './utilities/BattleActions';
-import NumCurMax, { RNumCurMax } from './utilities/NumCurMax';
+import {
+  BattleActions,
+  RBattleAction,
+} from '../components/phaser/classes/BattleActions';
+import NumCurMax, { RNumCurMax } from '../components/phaser/classes/NumCurMax';
 import { MonsterJson } from '../constJson';
 import { monsterIdMin } from '../components/phaser/const';
 

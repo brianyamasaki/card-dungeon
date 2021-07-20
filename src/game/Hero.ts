@@ -1,8 +1,8 @@
-import NumCurMax, { RNumCurMax } from './utilities/NumCurMax';
+import NumCurMax, { RNumCurMax } from '../components/phaser/classes/NumCurMax';
 import {
   EffectsOverTurns,
   REffectsOverTurns,
-} from './utilities/EffectsOverTurns';
+} from '../components/phaser/classes/EffectsOverTurns';
 import { HeroJson } from '../constJson';
 import { heroIdMin } from '../components/phaser/const';
 
@@ -94,8 +94,8 @@ export default class Hero {
 
   // getters and methods TBD
 
-  public healthEffect(effect:number) {
-    this.health.causeDamage(effect)
+  public healthEffect(effect: number) {
+    this.health.causeDamage(effect);
   }
 
   public getEffectsOverTurns() {

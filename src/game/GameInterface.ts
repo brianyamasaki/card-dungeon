@@ -1,7 +1,7 @@
 import Controller from './Controller';
 import { CardLocation, Card, RCard } from './Card';
 import { CardGroup } from './CardGroup';
-import { RAction } from './utilities/Action';
+import { RAction } from '../components/phaser/classes/Action';
 
 import Hero from './Hero';
 import { Monster } from './Monster';

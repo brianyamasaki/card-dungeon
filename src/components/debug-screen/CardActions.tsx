@@ -2,8 +2,8 @@ import React from 'react';
 import { Button } from 'reactstrap';
 import { useSetRecoilState, useRecoilValue, SetterOrUpdater } from 'recoil';
 import { RMonster } from '../../game/Monster';
-import { BattleTarget } from '../../game/utilities/BattleTarget';
-import { RAction } from '../../game/utilities/Action';
+import { BattleTarget } from '../phaser/classes/BattleTarget';
+import { RAction } from '../phaser/classes/Action';
 import { RCard } from '../../game/Card';
 import { gameInterface } from '../../game/GameInterface';
 import { gameStateAtom, heroIdState } from './recoilState';
@@ -25,8 +25,8 @@ const ActionButton = (
 ) => {
   return (
     <Button
-      color='primary'
-      size='sm'
+      color="primary"
+      size="sm"
       onClick={() => {
         if (gameInterface) {
           gameInterface.playCardInHand(card, action, targetIds);
@@ -96,18 +96,20 @@ const ActionButtons = (
 // allowing those actions on each monster allowed.
 const CardActions = ({ card, monsters }: FunctionProps) => {
   const setGameState = useSetRecoilState(gameStateAtom);
-  const heroId = useRecoilValue(heroIdState)
+  const heroId = useRecoilValue(heroIdState);
   const actionLines = card.battleActions.actions.map(
     (action: RAction, i: number) => (
       <li key={i}>
         <div>
           <span>{action.description}</span>
-          <span>{ActionButtons(action, monsters, card, setGameState, heroId)}</span>
+          <span>
+            {ActionButtons(action, monsters, card, setGameState, heroId)}
+          </span>
         </div>
       </li>
     )
   );
-  return <ul className='card-actions'>{actionLines}</ul>;
+  return <ul className="card-actions">{actionLines}</ul>;
 };
 
 export default CardActions;

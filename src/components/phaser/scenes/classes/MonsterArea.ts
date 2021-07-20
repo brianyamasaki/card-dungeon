@@ -34,6 +34,19 @@ export class MonsterArea {
     this.arrangeMonsters();
   };
 
+  public findMonsters = (ids: number[] | null): CDMonster[] => {
+    const foundMonsters: CDMonster[] = [];
+    if (ids === null) {
+      return this.monsters;
+    }
+    this.monsters.forEach((monster) => {
+      if (ids.indexOf(monster.id) !== -1) {
+        foundMonsters.push(monster);
+      }
+    });
+    return foundMonsters;
+  };
+
   private arrangeMonsters = () => {
     const splits: xySize[] = [];
     const quarterWidth = this.width / 4;

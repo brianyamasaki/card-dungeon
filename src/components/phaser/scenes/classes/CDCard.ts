@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import GameScreen from '../Game';
 import { handHeight, cardIdMin } from '../../const';
 import { CardJson } from '../../../../constJson';
-import { BattleActions } from '../../../../game/utilities/BattleActions';
+import { BattleActions } from '../../classes/BattleActions';
 
 const defaultDepth = 100;
 const hoverDepth = 200;
@@ -21,6 +21,9 @@ export class CDCard extends Phaser.GameObjects.Sprite {
   cost: number;
   battleActions: BattleActions;
   isAddedToScene: boolean = false;
+  isDragging: boolean = false;
+  preDragScale: number = 1;
+  preDragY: number = 0;
 
   constructor(scene: GameScreen, x: number, y: number, json: CardJson) {
     super(scene, x, y, json.imageUrl);
@@ -30,6 +33,7 @@ export class CDCard extends Phaser.GameObjects.Sprite {
 
     const scaleFactor = handHeight / this.height;
     this.setScale(scaleFactor, scaleFactor);
+    this.preDragScale = scaleFactor;
     this.setInteractive({ useHandCursor: true, draggable: true });
     this.setData('isCard', true);
 
@@ -70,30 +74,32 @@ export class CDCard extends Phaser.GameObjects.Sprite {
   public setPos = (x: number, y: number) => {
     this.x = x;
     this.y = y;
+    this.preDragY = y;
     this.setPosition(x, y);
     return this;
   };
 
   private onPointerOver = () => {
     this.setDepth(hoverDepth);
-    // this.scene.tweens.add({
-    //   targets: this,
-    //   scale: 0.7,
-    //   y: this.y - 80,
-    //   ease: 'linear',
-    //   duration: 150,
-    // });
+    if (this.isDragging) return;
+    this.scene.tweens.add({
+      targets: this,
+      scale: 0.5,
+      y: this.y - 35,
+      ease: 'linear',
+      duration: 150,
+    });
   };
 
   private onPointerOut = () => {
     this.setDepth(defaultDepth);
-    // this.scene.tweens.add({
-    //   targets: this,
-    //   scale: this.originalScale,
-    //   y: this.y,
-    //   ease: 'linear',
-    //   duration: 100,
-    // });
+    this.scene.tweens.add({
+      targets: this,
+      scale: this.preDragScale,
+      y: this.preDragY,
+      ease: 'linear',
+      duration: 100,
+    });
   };
 
   private onDragStart = (
@@ -102,6 +108,15 @@ export class CDCard extends Phaser.GameObjects.Sprite {
     dragY: number
   ) => {
     this.dragStart = new Phaser.Geom.Point(this.x, this.y);
+    this.isDragging = true;
+    if (this.scale > this.preDragScale) {
+      this.scene.tweens.add({
+        targets: this,
+        scale: this.preDragScale,
+        ease: 'linear',
+        duration: 50,
+      });
+    }
   };
 
   private onDrag = (
@@ -121,6 +136,7 @@ export class CDCard extends Phaser.GameObjects.Sprite {
       ease: 'linear',
       duration: 100,
     });
+    this.isDragging = false;
   };
 
   // non-Phaser
