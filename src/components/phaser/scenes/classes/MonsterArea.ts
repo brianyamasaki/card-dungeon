@@ -25,6 +25,7 @@ export class MonsterArea {
     this.height = monsterRectangle.bottom - monsterRectangle.top;
   }
 
+  // non-Phaser methods
   public addMonsters = (monsters: CDMonster[]) => {
     const initialIndex = this.monsters.length;
     monsters.forEach((monster, i: number) => {
@@ -47,6 +48,13 @@ export class MonsterArea {
     return foundMonsters;
   };
 
+  public chooseActions() {
+    this.monsters.forEach((monster) => {
+      monster.chooseAction();
+    });
+  }
+
+  // Phaser method
   private arrangeMonsters = () => {
     const splits: xySize[] = [];
     const quarterWidth = this.width / 4;

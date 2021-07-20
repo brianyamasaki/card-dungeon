@@ -50,6 +50,7 @@ export class CDController {
     this.handArea
       .addCards(this.deck.removeCards(5))
       .updateCards(this.mana.getCur());
+    this.monsterArea.chooseActions();
     return this;
   }
 

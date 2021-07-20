@@ -21,6 +21,7 @@ export class CDMonster extends Phaser.GameObjects.Sprite {
   health: NumCurMax;
   healthEffectsList: EffectsOverTurns[] = [];
   battleActions: BattleActions;
+  nextAction: Action | null = null;
 
   constructor(scene: Phaser.Scene, x: number, y: number, json: MonsterJson) {
     super(scene, x, y, json.imageUrl);
@@ -76,13 +77,15 @@ export class CDMonster extends Phaser.GameObjects.Sprite {
     );
     scene.add.existing(this.monsterName);
     scene.add.existing(this.monsterHealth);
+    scene.add.existing(this.monsterAction);
   }
 
   setPlace(x: number, y: number, minDim: number) {
     this.setPosition(x, y).setDisplaySize(minDim, minDim);
     const textOffset = minDim / 2 + 10;
-    this.monsterName.setPosition(x - 125, y - textOffset);
+    this.monsterName.setPosition(x - 125, y - textOffset - 25);
     this.monsterHealth.setPosition(x - 125, y + textOffset);
+    this.monsterAction.setPosition(x - 125, y - textOffset);
   }
 
   destroy() {
@@ -113,12 +116,14 @@ export class CDMonster extends Phaser.GameObjects.Sprite {
     this.updateHealth();
   }
 
-  chooseAction(): Action {
+  chooseAction() {
     const { actions } = this.battleActions;
     let iAction = 0;
     if (actions.length > 1) {
       iAction = Math.trunc(Math.random() * actions.length);
     }
-    return actions[iAction];
+    this.nextAction = actions[iAction];
+    this.monsterAction.setText(this.nextAction.description);
+    return this;
   }
 }
