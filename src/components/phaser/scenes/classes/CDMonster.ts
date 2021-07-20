@@ -17,7 +17,7 @@ export class CDMonster extends Phaser.GameObjects.Sprite {
   name: string;
   description: string;
   imageUrl: string;
-  armor: NumCurMax;
+  armor: number;
   health: NumCurMax;
   healthEffectsList: EffectsOverTurns[] = [];
   battleActions: BattleActions;
@@ -36,7 +36,7 @@ export class CDMonster extends Phaser.GameObjects.Sprite {
     this.name = json.name;
     this.description = json.description;
     this.imageUrl = json.imageUrl;
-    this.armor = new NumCurMax(json.armor);
+    this.armor = 0;
     this.health = new NumCurMax(json.health);
     this.battleActions = new BattleActions(json.battleActions);
 
@@ -91,16 +91,21 @@ export class CDMonster extends Phaser.GameObjects.Sprite {
   destroy() {
     this.monsterName.destroy();
     this.monsterHealth.destroy();
+    this.monsterAction.destroy();
     super.destroy();
   }
 
+  // non-Phaser methods
   updateHealth() {
     this.monsterHealth.setText(
       `Health: ${this.health.getCur()} / ${this.health.getMax()}`
     );
   }
 
-  // non-Phaser methods
+  resetArmor() {
+    this.armor = 0;
+  }
+
   acceptAction(action: Action) {
     const { healthEffects, armorUpEffects } = action;
     if (healthEffects) {
@@ -111,7 +116,7 @@ export class CDMonster extends Phaser.GameObjects.Sprite {
     }
     if (armorUpEffects) {
       // currently we don't support long term armor ups
-      this.armor.addToDelta(armorUpEffects.getDamage());
+      this.armor += armorUpEffects.getDamage();
     }
     this.updateHealth();
   }

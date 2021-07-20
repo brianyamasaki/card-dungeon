@@ -54,6 +54,31 @@ export class MonsterArea {
     });
   }
 
+  public checkForDeadMonsters() {
+    const monstersStillAlive: CDMonster[] = [];
+    const monstersDead: CDMonster[] = [];
+    this.monsters.forEach((monster) => {
+      if (monster.health.getCur() <= 0) {
+        monstersDead.push(monster);
+      } else {
+        monstersStillAlive.push(monster);
+      }
+    });
+    // remove dead monsters
+    monstersDead.forEach((monster) => {
+      monster.destroy();
+    });
+    // only keep alive monsters
+    this.monsters = monstersStillAlive;
+    return this.addMonsters;
+  }
+
+  public resetArmor() {
+    this.monsters.forEach((monster) => {
+      monster.resetArmor();
+    });
+  }
+
   // Phaser method
   private arrangeMonsters = () => {
     const splits: xySize[] = [];

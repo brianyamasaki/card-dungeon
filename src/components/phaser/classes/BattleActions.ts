@@ -37,6 +37,7 @@ export class BattleActions {
           });
           break;
         case BattleTarget.TargetHero:
+        case BattleTarget.TargetSelf:
           hero.acceptAction(action);
           break;
         default:

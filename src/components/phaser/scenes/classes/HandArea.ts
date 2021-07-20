@@ -46,7 +46,6 @@ export class HandArea {
     }
     const cardWidth = cards[0].displayWidth + 5;
     const cardsWidth = cards.length * cardWidth;
-    console.log(handWidth);
     if (cardsWidth <= handWidth) {
       const paddingX =
         (handWidth - cardsWidth) / 2 + handRectangle.left + cardWidth / 2;

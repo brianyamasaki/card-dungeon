@@ -47,10 +47,16 @@ export class CDController {
   }
 
   startTurn() {
+    this.mana.resetMana();
+
     this.handArea
       .addCards(this.deck.removeCards(5))
       .updateCards(this.mana.getCur());
+    // monster actions recalculated
     this.monsterArea.chooseActions();
+
+    // hero armor is reset
+
     return this;
   }
 
@@ -63,32 +69,22 @@ export class CDController {
     const monsters = this.monsterArea.findMonsters(id ? [id] : null);
     cdCard.battleActions.playCard(monsters, this.hero);
 
-    // Phaser code
+    // remove dead monsters
+    this.monsterArea.checkForDeadMonsters();
+
+    // updates cards so they can be dragged or not depending on mana available
     this.handArea.updateCards(this.mana.getCur());
   }
 
   // following must be bound because it's used in a callback
   endTurn = () => {
-    // what do we do here?
+    // enemy actions occur here
 
     // move cards from hand to discard
     this.discard.addCards(this.handArea.removeAllCards());
 
-    // if (action.healthEffects) {
-    //   const effect = action.healthEffects.effect;
-
-    //   targetIds.forEach((id) => {
-    //     const foundMonster = gameState.getMonster(id);
-
-    //     if (foundMonster) {
-    //       foundMonster.healthEffect(effect);
-    //     } else if (gameState.getHero().id === id) {
-    //       gameState.getHero().healthEffect(effect);
-    //     }
-    //   });
-    // }
-
-    this.mana.resetMana();
+    // reset enemy armor to 0
+    this.monsterArea.resetArmor();
 
     // increment Effects indexes
 
