@@ -1,11 +1,11 @@
 {
-  "name": "Fireball",
-  "description":"This is fireball attack",
-  "imageUrl":"",
+  "name": "Zap",
+  "description": "This is the Zap attack",
+  "imageUrl": "Cards/Zap.png",
   "cost": 1,
   "battleActions": {
     "actionsCountMax": 1,
-    "actions":[
+    "actions": [
       {
         "description": "Do 5 damage to one enemy",
         "verb": "Attack",

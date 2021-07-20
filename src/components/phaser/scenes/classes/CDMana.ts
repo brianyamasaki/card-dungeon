@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import NumCurMax from '../../../../game/utilities/NumCurMax';
+import NumCurMax from '../../classes/NumCurMax';
 import { manaWidth, manaHeight } from '../../const';
 
 const textStyle = {
@@ -17,21 +17,31 @@ const textStyle = {
 export class CDMana extends Phaser.GameObjects.Text {
   mana: NumCurMax;
 
-  constructor(scene: Phaser.Scene, x: number, y: number, mana: NumCurMax) {
-    super(
-      scene,
-      x,
-      y,
-      `Energy:\n${mana.getCur()} / ${mana.getMax()}`,
-      textStyle
-    );
+  constructor(scene: Phaser.Scene, x: number, y: number, manaMax: number) {
+    super(scene, x, y, `Energy:\n${manaMax} / ${manaMax}`, textStyle);
 
-    this.mana = mana;
+    this.mana = new NumCurMax(manaMax);
     scene.add.existing(this);
   }
 
-  updateToGameState(mana: NumCurMax) {
-    this.setText(`Energy:\n${mana.getCur()} / ${mana.getMax()}`);
+  updateDisplay() {
+    this.setText(`Energy:\n${this.mana.getCur()} / ${this.mana.getMax()}`);
     this.update();
+  }
+
+  // non-Phaser methods
+
+  useMana(units: number) {
+    this.mana.addToDelta(units);
+    this.updateDisplay();
+  }
+
+  resetMana() {
+    this.mana.resetToMax();
+    this.updateDisplay();
+  }
+
+  getCur() {
+    return this.mana.getCur();
   }
 }

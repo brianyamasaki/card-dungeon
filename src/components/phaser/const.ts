@@ -8,6 +8,9 @@ export const cardDimensions = {
   height: 225,
   width: 150,
 };
+export const cardIdMin = 5000;
+export const heroIdMin = 0;
+export const monsterIdMin = 1000;
 
 export const cardPadding = 5;
 

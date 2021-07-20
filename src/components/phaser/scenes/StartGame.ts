@@ -1,7 +1,6 @@
 import Phaser from 'phaser';
 import { startGameScreenId, gameScreenId, phaserAssetsFolder } from '../const';
 import { Button } from './classes/Button';
-import GameInterface from '../../../game/GameInterface';
 
 const backgroundImageId = 'backgroundImage';
 const startButtonUpImageId = 'startButtonUpImage';
@@ -51,7 +50,6 @@ export default class StartGame extends Phaser.Scene {
       .setDownTexture(startButtonDownImageId)
       .setOverTexture(startButtonOverImageId)
       .on('pointerup', () => {
-        new GameInterface();
         this.scene.start(gameScreenId);
       });
     this.add.existing(this.startButton);

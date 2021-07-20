@@ -47,6 +47,10 @@ export default class NumCurMax {
     };
   }
 
+  public resetToMax() {
+    this.delta = 0;
+  }
+
   public toString() {
     return `${this.getCur()} / ${this.max}`;
   }

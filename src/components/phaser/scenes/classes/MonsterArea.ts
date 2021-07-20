@@ -25,6 +25,7 @@ export class MonsterArea {
     this.height = monsterRectangle.bottom - monsterRectangle.top;
   }
 
+  // non-Phaser methods
   public addMonsters = (monsters: CDMonster[]) => {
     const initialIndex = this.monsters.length;
     monsters.forEach((monster, i: number) => {
@@ -34,17 +35,40 @@ export class MonsterArea {
     this.arrangeMonsters();
   };
 
+  public findMonsters = (ids: number[] | null): CDMonster[] => {
+    const foundMonsters: CDMonster[] = [];
+    if (ids === null) {
+      return this.monsters;
+    }
+    this.monsters.forEach((monster) => {
+      if (ids.indexOf(monster.id) !== -1) {
+        foundMonsters.push(monster);
+      }
+    });
+    return foundMonsters;
+  };
+
+  public chooseActions() {
+    this.monsters.forEach((monster) => {
+      monster.chooseAction();
+    });
+  }
+
+  // Phaser method
   private arrangeMonsters = () => {
     const splits: xySize[] = [];
     const quarterWidth = this.width / 4;
     const quarterHeight = this.height / 4;
+    const halfWidth = this.width / 2;
+    const halfHeight = this.width / 2;
     switch (this.monsters.length) {
+      case 0:
       case 1:
         splits.push({
-          x: this.x,
-          y: this.y,
-          width: this.width,
-          height: this.height,
+          x: this.x - quarterWidth,
+          y: this.y + quarterHeight,
+          width: halfWidth,
+          height: halfHeight,
         });
         break;
       case 2:
@@ -53,26 +77,26 @@ export class MonsterArea {
         splits.push({
           x: this.x - quarterWidth,
           y: this.y + quarterHeight,
-          width: this.width / 2,
-          height: this.height / 2,
+          width: halfWidth,
+          height: halfHeight,
         });
         splits.push({
           x: this.x + quarterWidth,
           y: this.y + quarterHeight,
-          width: this.width / 2,
-          height: this.height / 2,
+          width: halfWidth,
+          height: halfHeight,
         });
         splits.push({
           x: this.x - quarterWidth,
           y: this.y - quarterHeight,
-          width: this.width / 2,
-          height: this.height / 2,
+          width: halfWidth,
+          height: halfHeight,
         });
         splits.push({
           x: this.x + quarterWidth,
           y: this.y - quarterHeight,
-          width: this.width / 2,
-          height: this.height / 2,
+          width: halfWidth,
+          height: halfHeight,
         });
         break;
       default:

@@ -1,20 +1,15 @@
-import { BattleActions, BattleActionsJson, RBattleAction } from './utilities/BattleActions';
+import {
+  BattleActions,
+  RBattleAction,
+} from '../components/phaser/classes/BattleActions';
+import { CardJson } from '../constJson';
+import { cardIdMin } from '../components/phaser/const';
 
 export enum CardLocation {
   Deck,
   Discard,
-  Hand
+  Hand,
 }
-
-export type CardJson = {
-  name:string,
-  description:string;
-  imageUrl:string;
-  cost:number;
-  battleActions: BattleActionsJson;
-}
-
-export const cardIdMin = 5000;
 
 export type RCard = {
   id: number;
@@ -23,21 +18,21 @@ export type RCard = {
   imageUrl: string;
   cost: number;
   battleActions: RBattleAction;
-}
+};
 
 export class Card {
   static currentIndex = cardIdMin;
   id;
   name;
   description;
-  imageUrl; 
+  imageUrl;
   cost;
   battleActions: BattleActions;
   private _isSelected: boolean = false;
-  location:CardLocation = CardLocation.Deck;
+  location: CardLocation = CardLocation.Deck;
 
   constructor(json: CardJson) {
-    const {name, description, imageUrl, cost} = json;
+    const { name, description, imageUrl, cost } = json;
 
     this.id = Card.currentIndex++;
     this.name = name;
@@ -45,7 +40,12 @@ export class Card {
     this.imageUrl = imageUrl;
     this.cost = cost;
     this.battleActions = new BattleActions(json.battleActions);
-    if (!json.name || !json.description || json.cost === undefined || json.battleActions === undefined) {
+    if (
+      !json.name ||
+      !json.description ||
+      json.cost === undefined ||
+      json.battleActions === undefined
+    ) {
       const str = `error loading Card - name:${name}, description:${description}, cost:${cost}, battleActions:${this.battleActions}`;
       console.error(str);
     }
@@ -68,16 +68,14 @@ export class Card {
   }
 
   public getRCard(): RCard {
-    const { id, name, description, imageUrl, cost} = this;
+    const { id, name, description, imageUrl, cost } = this;
     return {
       id,
-      name, 
+      name,
       description,
       imageUrl,
       cost,
-      battleActions: this.battleActions.getRBattleAction()
-    }
+      battleActions: this.battleActions.getRBattleAction(),
+    };
   }
-
 }
-

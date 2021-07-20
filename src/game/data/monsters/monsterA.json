@@ -1,7 +1,7 @@
 {
   "name": "Monster A",
   "description": "Sample Monster A",
-  "imageUrl": "",
+  "imageUrl": "monsters/Enemy Piercer.png",
   "armor": 2,
   "health": 5,
   "battleActions": {
@@ -9,15 +9,17 @@
     "actions": [
       {
         "description": "Do 3 damage to hero",
-        "verb":"Attack",
+        "verb": "Attack",
         "target": "targetHero",
-        "healthEffects": [-3]
+        "healthEffects": [-3],
+        "armorUpEffects": []
       },
       {
         "description": "Burning to hero",
         "verb": "Burn",
         "target": "targetHero",
-        "healthEffects": [-3, -3, -3]
+        "healthEffects": [-3, -3, -3],
+        "armorUpEffects": []
       }
     ]
   }

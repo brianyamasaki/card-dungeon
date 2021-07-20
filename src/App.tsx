@@ -1,22 +1,18 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import HomePage from './pages/Home';
-import DebugScreenPage from './pages/DebugScreen';
 import GamePage from './pages/GamePage';
 import './App.css';
 
 function App() {
   return (
-    <div className='App'>
+    <div className="App">
       <Router>
         <Switch>
-          <Route exact path='/'>
+          <Route exact path="/">
             <HomePage />
           </Route>
-          <Route exact path='/debugScreen'>
-            <DebugScreenPage />
-          </Route>
-          <Route exact path='/game'>
+          <Route exact path="/game">
             <GamePage />
           </Route>
         </Switch>

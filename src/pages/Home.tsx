@@ -7,10 +7,9 @@ const Home = () => (
     <Row>
       <h1>Heroes and Monsters</h1>
       <p>Welcome to our game, blah, blah</p>
-      <Link className='btn btn-primary' to='/debugScreen'>
-        Debug Screen for Game
+      <Link className="btn btn-primary" to="/game">
+        Phaser Game Engine
       </Link>
-      <Link to='/game'>In process Game</Link>
     </Row>
   </Container>
 );

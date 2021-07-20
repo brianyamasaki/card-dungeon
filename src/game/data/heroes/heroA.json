@@ -1,7 +1,7 @@
 {
   "name": "Hero Cone",
   "description": "Sample Monster A",
-  "imageUrl": "Heroes/HeroCone.png",
+  "imageUrl": "heroes/HeroCone.png",
   "armor": 2,
-  "health": 5
+  "health": 50
 }

@@ -1,7 +1,7 @@
 {
-  "name": "Leech",
+  "name": "Steal Parts",
   "description": "This is a healing and attack card",
-  "imageUrl": "Cards/Foo.png",
+  "imageUrl": "Cards/Steal_Parts.png",
   "cost": 2,
   "battleActions": {
     "actionsCountMax": 2,
@@ -10,13 +10,15 @@
         "description": "Do 4 damage to one enemy",
         "verb": "Attack",
         "target": "targetEnemy",
-        "healthEffects": [-4]
+        "healthEffects": [-4],
+        "armorUpEffects": []
       },
       {
         "description": "Heal Yourself for 4",
         "verb": "Heal",
         "target": "targetSelf",
-        "healthEffects": [4]
+        "healthEffects": [4],
+        "armorUpEffects": []
       }
     ]
   }

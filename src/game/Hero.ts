@@ -1,13 +1,10 @@
-import NumCurMax, { RNumCurMax } from "./utilities/NumCurMax";
-import { EffectsOverTurns, REffectsOverTurns } from "./utilities/EffectsOverTurns";
-
-export type HeroJson = {
-  name: string;
-  description?: string;
-  imageUrl: string;
-  health: number;
-  armor: number
-}
+import NumCurMax, { RNumCurMax } from '../components/phaser/classes/NumCurMax';
+import {
+  EffectsOverTurns,
+  REffectsOverTurns,
+} from '../components/phaser/classes/EffectsOverTurns';
+import { HeroJson } from '../constJson';
+import { heroIdMin } from '../components/phaser/const';
 
 export type RHero = {
   id: number;
@@ -19,7 +16,7 @@ export type RHero = {
   strengthDelta: number;
   defenseDelta: number;
   healthEffectsOverTurns: REffectsOverTurns[];
-}
+};
 
 export const initRHero: RHero = {
   id: 0,
@@ -28,15 +25,13 @@ export const initRHero: RHero = {
   imageUrl: '',
   health: {
     cur: 0,
-    max: 0
+    max: 0,
   },
   armor: 0,
   strengthDelta: 0,
   defenseDelta: 0,
-  healthEffectsOverTurns: []
+  healthEffectsOverTurns: [],
 };
-
-export const heroIdMin = 0;
 
 export default class Hero {
   static currentId = heroIdMin;
@@ -46,7 +41,7 @@ export default class Hero {
   health: NumCurMax;
   armor: number;
   strengthDelta: number;
-  defenseDelta:number;
+  defenseDelta: number;
   effectsOverTurns: EffectsOverTurns[];
   id: number;
 
@@ -60,32 +55,47 @@ export default class Hero {
     this.strengthDelta = 0;
     this.defenseDelta = 0;
     this.effectsOverTurns = [];
-    if (!json.name || !json.description || json.armor === undefined || json.health === undefined) {
+    if (
+      !json.name ||
+      !json.description ||
+      json.armor === undefined ||
+      json.health === undefined
+    ) {
       const str = `error loading Hero - name:${this.name}, description:${this.description}, armor:${json.armor}, health:${json.health}`;
       console.error(str);
     }
   }
 
   public getRHero(): RHero {
-    const { id, name, description, imageUrl, armor, strengthDelta, defenseDelta } = this;
+    const {
+      id,
+      name,
+      description,
+      imageUrl,
+      armor,
+      strengthDelta,
+      defenseDelta,
+    } = this;
 
     return {
       id,
       name,
       description,
-      imageUrl, 
+      imageUrl,
       armor,
       strengthDelta,
       defenseDelta,
       health: this.health.getRNumCurMax(),
-      healthEffectsOverTurns: this.effectsOverTurns.map(effect => effect.getREffectsOverTurns())
-    }
+      healthEffectsOverTurns: this.effectsOverTurns.map((effect) =>
+        effect.getREffectsOverTurns()
+      ),
+    };
   }
 
   // getters and methods TBD
 
-  public healthEffect(effect:number) {
-    this.health.causeDamage(effect)
+  public healthEffect(effect: number) {
+    this.health.causeDamage(effect);
   }
 
   public getEffectsOverTurns() {
