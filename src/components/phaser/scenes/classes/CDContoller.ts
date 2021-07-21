@@ -8,6 +8,13 @@ import { CDDiscard } from './CDDiscard';
 import { CDMana } from './CDMana';
 import { CDMonster } from './CDMonster';
 import { CDCard } from './CDCard';
+import {
+  GameEmitter,
+  GE_IncrementEffects,
+  GE_DelExpiredEffects,
+  GE_DamageHero,
+  GE_DamageMonsters,
+} from '../../classes/GameEmitter';
 
 export class CDController {
   imageLibrary: ImageLibrary;
@@ -18,6 +25,7 @@ export class CDController {
   deck: CDDeck;
   discard: CDDiscard;
   mana: CDMana;
+  turnEmitter: GameEmitter;
 
   constructor(
     imageLibrary: ImageLibrary,
@@ -38,6 +46,7 @@ export class CDController {
     this.discard = discard;
     this.mana = mana;
     deck.setupDiscard(discard);
+    this.turnEmitter = GameEmitter.getInstance();
   }
 
   startGame(monsters: CDMonster[], cards: CDCard[]) {
@@ -69,6 +78,8 @@ export class CDController {
     // Cause damage
     const monsters = this.monsterArea.findMonsters(id ? [id] : null);
     cdCard.battleActions.playCard(monsters, this.hero);
+    // incur healthEffectsList damage
+    this.turnEmitter.emit(GE_DamageMonsters);
 
     // remove dead monsters
     this.monsterArea.checkForDeadMonsters();
@@ -81,6 +92,8 @@ export class CDController {
   endTurn = () => {
     // enemy actions occur here
     this.monsterArea.attackHero(this.hero);
+    // incur healthEffectsList damage
+    this.turnEmitter.emit(GE_DamageHero);
 
     // move cards from hand to discard
     this.discard.addCards(this.handArea.removeAllCards());
@@ -88,7 +101,10 @@ export class CDController {
     // reset enemy armor to 0
     this.monsterArea.resetArmor();
 
-    // increment Effects indexes
+    // increment effects indexes
+    this.turnEmitter.emit(GE_IncrementEffects);
+    // delete expired effects
+    this.turnEmitter.emit(GE_DelExpiredEffects);
 
     // prepare for the player
     this.startTurn();

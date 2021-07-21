@@ -9,6 +9,7 @@ import { CDDiscard } from './classes/CDDiscard';
 import { CDMana } from './classes/CDMana';
 import { ImageLibrary } from '../classes/ImageLibrary';
 import {
+  startGameScreenId,
   gameScreenId,
   phaserAssetsFolder,
   handXctr,
@@ -33,10 +34,22 @@ import { TextButton } from './classes/TextButton';
 import { DropZone } from './classes/DropZone';
 import { AssetLibrary } from '../classes/AssetLibrary';
 import { CDController } from './classes/CDContoller';
+import { GameEmitter, GE_GameOver } from '../classes/GameEmitter';
 
 const backgroundImageId = 'backgroundImage';
 const deckImageId = 'deckImage';
 const discardImageId = 'discardImage';
+const gameLostId = 'gameLostImage';
+const gameWonId = 'gameWonImage';
+
+// game textures are listed here and loaded at preload()
+const gameTextures = [
+  [backgroundImageId, `${phaserAssetsFolder}GameBackground.jpg`],
+  [deckImageId, `${phaserAssetsFolder}Deck.png`],
+  [discardImageId, `${phaserAssetsFolder}Discard.png`],
+  [gameLostId, `${phaserAssetsFolder}GameLost.png`],
+  [gameWonId, `${phaserAssetsFolder}GameWon.png`],
+];
 
 export default class GameScreen extends Phaser.Scene {
   imageLibrary: ImageLibrary;
@@ -52,20 +65,27 @@ export default class GameScreen extends Phaser.Scene {
   dragHighlight: Phaser.GameObjects.Rectangle | null = null;
   isDragging = false;
   controller: CDController | null = null;
+  gameEmitter: GameEmitter;
 
   constructor() {
     super(gameScreenId);
     this.imageLibrary = new ImageLibrary();
     this.assetLibrary = new AssetLibrary();
+    this.gameEmitter = GameEmitter.getInstance();
   }
 
   preload() {
-    this.load.image(
-      backgroundImageId,
-      `${phaserAssetsFolder}GameBackground.jpg`
-    );
-    this.load.image(deckImageId, `${phaserAssetsFolder}/Deck.png`);
-    this.load.image(discardImageId, `${phaserAssetsFolder}/Discard.png`);
+    gameTextures.forEach((info) => {
+      this.load.image(info[0], info[1]);
+    });
+    // this.load.image(
+    //   backgroundImageId,
+    //   `${phaserAssetsFolder}GameBackground.jpg`
+    // );
+    // this.load.image(deckImageId, `${phaserAssetsFolder}/Deck.png`);
+    // this.load.image(discardImageId, `${phaserAssetsFolder}/Discard.png`);
+    // this.load.image(gameLostId, `${phaserAssetsFolder}GameLost.png`);
+    // this.load.image(gameWonId, `${phaserAssetsFolder}GameLost.png`);
     this.imageLibrary.preload(this);
     this.assetLibrary.preload();
   }
@@ -142,6 +162,7 @@ export default class GameScreen extends Phaser.Scene {
         arenaHeight
       ).setData('isArena', true);
       this.setInputEvents();
+      this.gameEmitter.on(GE_GameOver, this.gameOverScreen);
     }
   };
 
@@ -274,5 +295,16 @@ export default class GameScreen extends Phaser.Scene {
     if (this.controller) {
       this.controller.playCardInHand(cdCard, cdMonster ? cdMonster.id : null);
     }
+  };
+
+  gameOverScreen = (obj: any) => {
+    this.add.image(
+      this.cameras.main.centerX,
+      200,
+      obj.gameWon ? gameWonId : gameLostId
+    );
+    this.input.on('pointerdown', () => {
+      this.scene.start(startGameScreenId);
+    });
   };
 }

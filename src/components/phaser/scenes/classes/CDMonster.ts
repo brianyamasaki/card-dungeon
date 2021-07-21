@@ -6,6 +6,11 @@ import { BattleActions } from '../../classes/BattleActions';
 import { Action } from '../../classes/Action';
 import { EffectsOverTurns } from '../../classes/EffectsOverTurns';
 import { CDHero } from './CDHero';
+import {
+  GameEmitter,
+  GE_DelExpiredEffects,
+  GE_DamageMonsters,
+} from '../../classes/GameEmitter';
 
 export class CDMonster extends Phaser.GameObjects.Sprite {
   // Phaser members
@@ -69,6 +74,9 @@ export class CDMonster extends Phaser.GameObjects.Sprite {
     scene.add.existing(this.monsterName);
     scene.add.existing(this.monsterHealth);
     scene.add.existing(this.monsterAction);
+    GameEmitter.getInstance()
+      .on(GE_DelExpiredEffects, this.cleanUpEffectsList)
+      .on(GE_DamageMonsters, this.useHealthEffectsList);
   }
 
   setPlace(x: number, y: number, minDim: number) {
@@ -129,4 +137,18 @@ export class CDMonster extends Phaser.GameObjects.Sprite {
   attackHero(hero: CDHero) {
     this.nextAction?.actOnHero(hero, this);
   }
+  // go through healthEffectsList and remove expired healthEffects
+  cleanUpEffectsList = () => {
+    this.healthEffectsList = this.healthEffectsList.filter(
+      (eot) => !eot.expired
+    );
+  };
+
+  // iterate through healthEffectsList and inflict damage or healing effects
+  useHealthEffectsList = () => {
+    this.healthEffectsList.forEach((eot) => {
+      this.health.causeDamage(eot.getDamage());
+    });
+    this.updateHealth();
+  };
 }

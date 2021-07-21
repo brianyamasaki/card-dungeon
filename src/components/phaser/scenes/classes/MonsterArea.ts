@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { monsterRectangle } from '../../const';
 import { CDHero } from './CDHero';
 import { CDMonster } from './CDMonster';
+import { GameEmitter, GE_GameOver } from '../../classes/GameEmitter';
 
 type xySize = {
   x: number;
@@ -71,7 +72,10 @@ export class MonsterArea {
     });
     // only keep alive monsters
     this.monsters = monstersStillAlive;
-    return this.addMonsters;
+    if (monstersStillAlive.length === 0) {
+      GameEmitter.getInstance().emit(GE_GameOver, { gameWon: true });
+    }
+    return this;
   }
 
   public resetArmor() {
