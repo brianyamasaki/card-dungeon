@@ -1,8 +1,8 @@
 import { EffectsOverTurns, REffectsOverTurns } from './EffectsOverTurns';
 import { BattleTarget, objBattleTarget } from './BattleTarget';
 import { ActionJson } from '../../../constJson';
-import { CDController } from '../scenes/classes/CDContoller';
 import { CDMonster } from '../scenes/classes/CDMonster';
+import { CDHero } from '../scenes/classes/CDHero';
 
 export type RAction = {
   description: string;
@@ -43,22 +43,17 @@ export class Action {
     );
   }
 
-  public actOnMonster = (controller: CDController, id: number) => {
-    const { monsterArea } = controller;
-    let monsters: CDMonster[] = [];
+  public actOnHero = (hero: CDHero, monster: CDMonster) => {
     switch (this.target) {
-      case BattleTarget.TargetEnemy:
-        monsters = monsterArea.findMonsters([id]);
+      case BattleTarget.TargetHero:
+        hero.acceptAction(this);
         break;
-      case BattleTarget.TargetAllEnemies:
-        monsters = monsterArea.findMonsters(null);
+      case BattleTarget.TargetSelf:
+        monster.acceptAction(this);
         break;
       default:
-        return;
+        break;
     }
-    monsters.forEach((monster) => {
-      // monster.
-    });
   };
 
   public getRAction(): RAction {

@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { monsterRectangle } from '../../const';
+import { CDHero } from './CDHero';
 import { CDMonster } from './CDMonster';
 
 type xySize = {
@@ -76,6 +77,12 @@ export class MonsterArea {
   public resetArmor() {
     this.monsters.forEach((monster) => {
       monster.resetArmor();
+    });
+  }
+
+  public attackHero(hero: CDHero) {
+    this.monsters.forEach((monster) => {
+      monster.attackHero(hero);
     });
   }
 

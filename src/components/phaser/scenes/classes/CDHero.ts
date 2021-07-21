@@ -92,10 +92,11 @@ export class CDHero extends Phaser.GameObjects.Sprite {
   acceptAction(action: Action) {
     const { healthEffects, armorUpEffects } = action;
     if (healthEffects && healthEffects.effectsLength() > 0) {
-      if (healthEffects.effectsLength() < 2) {
+      if (healthEffects.effectsLength() > 1) {
         this.healthEffectsList.push(healthEffects);
+      } else {
+        this.health.causeDamage(healthEffects.getDamage());
       }
-      this.health.addToDelta(healthEffects.getDamage());
     }
     if (armorUpEffects && armorUpEffects.effectsLength() > 0) {
       // currently we don't support long term armor ups

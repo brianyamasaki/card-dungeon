@@ -56,6 +56,7 @@ export class CDController {
     this.monsterArea.chooseActions();
 
     // hero armor is reset
+    this.hero.resetArmor();
 
     return this;
   }
@@ -76,9 +77,10 @@ export class CDController {
     this.handArea.updateCards(this.mana.getCur());
   }
 
-  // following must be bound because it's used in a callback
+  // following method must be bound because it's used in a callback
   endTurn = () => {
     // enemy actions occur here
+    this.monsterArea.attackHero(this.hero);
 
     // move cards from hand to discard
     this.discard.addCards(this.handArea.removeAllCards());
