@@ -18,13 +18,20 @@ export class EffectsOverTurns {
   target: BattleTarget;
   currentIndex: number;
   effects: number[];
+  verb: string;
   expired = false;
 
-  constructor(description: string, target: BattleTarget, effects: number[]) {
+  constructor(
+    description: string,
+    target: BattleTarget,
+    effects: number[],
+    verb: string
+  ) {
     this.description = description;
     this.target = target;
     this.currentIndex = 0;
     this.effects = effects;
+    this.verb = verb;
     GameEmitter.getInstance().on(GE_IncrementEffects, this.incrementIndex);
   }
 

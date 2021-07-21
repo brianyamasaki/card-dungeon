@@ -16,6 +16,7 @@ import {
   GE_DelExpiredEffects,
   GE_DamageHero,
 } from '../../classes/GameEmitter';
+import { Burning } from './Burning';
 
 export class CDHero extends Phaser.GameObjects.Sprite {
   scene: Phaser.Scene;
@@ -35,6 +36,7 @@ export class CDHero extends Phaser.GameObjects.Sprite {
   strengthDelta: number = 0;
   defenseDelta: number = 0;
   healthEffectsList: EffectsOverTurns[] = [];
+  burningIndicator: Burning;
 
   constructor(scene: GameScreen, x: number, y: number, json: HeroJson) {
     super(scene, x, y, json.imageUrl);
@@ -76,6 +78,11 @@ export class CDHero extends Phaser.GameObjects.Sprite {
         fixedWidth: 250,
       }
     );
+    this.burningIndicator = new Burning(
+      scene,
+      this.x - 125,
+      this.y + heroHeight / 2
+    );
     scene.add.existing(this.heroName);
     scene.add.existing(this.heroHealth);
     GameEmitter.getInstance()
@@ -93,6 +100,7 @@ export class CDHero extends Phaser.GameObjects.Sprite {
   destroy() {
     this.heroHealth.destroy();
     this.heroName.destroy();
+    this.burningIndicator.destroy();
     super.destroy();
   }
 
@@ -130,9 +138,14 @@ export class CDHero extends Phaser.GameObjects.Sprite {
 
   // iterate through healthEffectsList and inflict damage or healing effects
   useHealthEffectsList = () => {
+    let burningTotal = 0;
     this.healthEffectsList.forEach((eot) => {
       this.health.causeDamage(eot.getDamage());
+      if (eot.verb === 'Burn') {
+        burningTotal += eot.getDamage();
+      }
     });
+    this.burningIndicator.updateValue(burningTotal);
     this.updateHealth();
   };
 }

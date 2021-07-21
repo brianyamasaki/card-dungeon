@@ -41,6 +41,7 @@ const deckImageId = 'deckImage';
 const discardImageId = 'discardImage';
 const gameLostId = 'gameLostImage';
 const gameWonId = 'gameWonImage';
+export const burningImageId = 'burningImage';
 
 // game textures are listed here and loaded at preload()
 const gameTextures = [
@@ -49,6 +50,7 @@ const gameTextures = [
   [discardImageId, `${phaserAssetsFolder}Discard.png`],
   [gameLostId, `${phaserAssetsFolder}GameLost.png`],
   [gameWonId, `${phaserAssetsFolder}GameWon.png`],
+  [burningImageId, `${phaserAssetsFolder}Burning.png`],
 ];
 
 export default class GameScreen extends Phaser.Scene {
@@ -78,14 +80,6 @@ export default class GameScreen extends Phaser.Scene {
     gameTextures.forEach((info) => {
       this.load.image(info[0], info[1]);
     });
-    // this.load.image(
-    //   backgroundImageId,
-    //   `${phaserAssetsFolder}GameBackground.jpg`
-    // );
-    // this.load.image(deckImageId, `${phaserAssetsFolder}/Deck.png`);
-    // this.load.image(discardImageId, `${phaserAssetsFolder}/Discard.png`);
-    // this.load.image(gameLostId, `${phaserAssetsFolder}GameLost.png`);
-    // this.load.image(gameWonId, `${phaserAssetsFolder}GameLost.png`);
     this.imageLibrary.preload(this);
     this.assetLibrary.preload();
   }
