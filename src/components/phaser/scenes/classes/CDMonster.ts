@@ -5,6 +5,7 @@ import NumCurMax from '../../classes/NumCurMax';
 import { BattleActions } from '../../classes/BattleActions';
 import { Action } from '../../classes/Action';
 import { EffectsOverTurns } from '../../classes/EffectsOverTurns';
+import { CDHero } from './CDHero';
 
 export class CDMonster extends Phaser.GameObjects.Sprite {
   // Phaser members
@@ -17,7 +18,7 @@ export class CDMonster extends Phaser.GameObjects.Sprite {
   name: string;
   description: string;
   imageUrl: string;
-  armor: NumCurMax;
+  armor: number;
   health: NumCurMax;
   healthEffectsList: EffectsOverTurns[] = [];
   battleActions: BattleActions;
@@ -36,7 +37,7 @@ export class CDMonster extends Phaser.GameObjects.Sprite {
     this.name = json.name;
     this.description = json.description;
     this.imageUrl = json.imageUrl;
-    this.armor = new NumCurMax(json.armor);
+    this.armor = 0;
     this.health = new NumCurMax(json.health);
     this.battleActions = new BattleActions(json.battleActions);
 
@@ -55,7 +56,7 @@ export class CDMonster extends Phaser.GameObjects.Sprite {
       scene,
       x - 125,
       y,
-      `Health: ${this.health.getCur()} / ${this.health.getMax()}`,
+      this.healthString(),
       {
         ...statsTextStyle,
         fixedWidth: 250,
@@ -65,16 +66,6 @@ export class CDMonster extends Phaser.GameObjects.Sprite {
       ...statsTextStyle,
       fixedWidth: 250,
     });
-    this.monsterHealth = new Phaser.GameObjects.Text(
-      scene,
-      x - 145,
-      y,
-      `Health: ${this.health.getCur()} / ${this.health.getMax()}`,
-      {
-        ...statsTextStyle,
-        fixedWidth: 250,
-      }
-    );
     scene.add.existing(this.monsterName);
     scene.add.existing(this.monsterHealth);
     scene.add.existing(this.monsterAction);
@@ -91,27 +82,35 @@ export class CDMonster extends Phaser.GameObjects.Sprite {
   destroy() {
     this.monsterName.destroy();
     this.monsterHealth.destroy();
+    this.monsterAction.destroy();
     super.destroy();
   }
 
-  updateHealth() {
-    this.monsterHealth.setText(
-      `Health: ${this.health.getCur()} / ${this.health.getMax()}`
-    );
+  // non-Phaser methods
+  healthString(): string {
+    return `Health: ${this.health.getCur()} / ${this.health.getMax()}`;
   }
 
-  // non-Phaser methods
+  updateHealth() {
+    this.monsterHealth.setText(this.healthString());
+  }
+
+  resetArmor() {
+    this.armor = 0;
+  }
+
   acceptAction(action: Action) {
     const { healthEffects, armorUpEffects } = action;
-    if (healthEffects) {
+    if (healthEffects && healthEffects.effectsLength() > 0) {
       if (healthEffects.effectsLength() > 1) {
         this.healthEffectsList.push(healthEffects);
+      } else {
+        this.health.causeDamage(healthEffects.getDamage());
       }
-      this.health.causeDamage(healthEffects.getDamage());
     }
-    if (armorUpEffects) {
+    if (armorUpEffects && armorUpEffects.effectsLength() > 0) {
       // currently we don't support long term armor ups
-      this.armor.addToDelta(armorUpEffects.getDamage());
+      this.armor += armorUpEffects.getDamage();
     }
     this.updateHealth();
   }
@@ -125,5 +124,9 @@ export class CDMonster extends Phaser.GameObjects.Sprite {
     this.nextAction = actions[iAction];
     this.monsterAction.setText(this.nextAction.description);
     return this;
+  }
+
+  attackHero(hero: CDHero) {
+    this.nextAction?.actOnHero(hero, this);
   }
 }

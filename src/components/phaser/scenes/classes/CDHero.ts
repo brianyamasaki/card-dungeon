@@ -26,7 +26,7 @@ export class CDHero extends Phaser.GameObjects.Sprite {
   description: string;
   imageUrl: string;
   health: NumCurMax;
-  armor: NumCurMax;
+  armor: number;
   strengthDelta: number = 0;
   defenseDelta: number = 0;
   healthEffectsList: EffectsOverTurns[] = [];
@@ -47,7 +47,7 @@ export class CDHero extends Phaser.GameObjects.Sprite {
     this.name = json.name;
     this.description = json.description || '';
     this.imageUrl = json.imageUrl;
-    this.armor = new NumCurMax(json.armor);
+    this.armor = 0;
     this.health = new NumCurMax(json.health);
 
     // Phaser initialization
@@ -65,7 +65,7 @@ export class CDHero extends Phaser.GameObjects.Sprite {
       scene,
       this.x - 125,
       this.y + heroHeight / 2,
-      `Health: ${this.health.getCur()} / ${this.health.getMax()}`,
+      this.statusString(),
       {
         ...statsTextStyle,
         fixedWidth: 250,
@@ -74,6 +74,13 @@ export class CDHero extends Phaser.GameObjects.Sprite {
     scene.add.existing(this.heroName);
     scene.add.existing(this.heroHealth);
   }
+
+  statusString = (): string => {
+    const healthLine = `Health: ${this.health}`;
+    const strengthLine = `Strength: ${this.strengthDelta}`;
+    const armorLine = `Armor: ${this.armor}`;
+    return `${healthLine}\n${strengthLine}\n${armorLine}`;
+  };
 
   destroy() {
     this.heroHealth.destroy();
@@ -84,15 +91,21 @@ export class CDHero extends Phaser.GameObjects.Sprite {
   // non-Phaser methods
   acceptAction(action: Action) {
     const { healthEffects, armorUpEffects } = action;
-    if (healthEffects) {
+    if (healthEffects && healthEffects.effectsLength() > 0) {
       if (healthEffects.effectsLength() > 1) {
         this.healthEffectsList.push(healthEffects);
+      } else {
+        this.health.causeDamage(healthEffects.getDamage());
       }
-      this.health.addToDelta(healthEffects.getDamage());
     }
-    if (armorUpEffects) {
+    if (armorUpEffects && armorUpEffects.effectsLength() > 0) {
       // currently we don't support long term armor ups
-      this.armor.addToDelta(armorUpEffects.getDamage());
+      this.armor += armorUpEffects.getDamage();
     }
+    this.heroHealth.setText(this.statusString());
+  }
+
+  resetArmor() {
+    this.armor = 0;
   }
 }

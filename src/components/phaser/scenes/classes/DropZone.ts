@@ -15,4 +15,9 @@ export class DropZone extends Phaser.GameObjects.Rectangle {
     this.setData('isDropZone', true);
     scene.add.existing(this);
   }
+
+  public setDroppable(isDroppable: boolean) {
+    this.input.dropZone = isDroppable;
+    return this;
+  }
 }

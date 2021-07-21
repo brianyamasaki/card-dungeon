@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { monsterRectangle } from '../../const';
+import { CDHero } from './CDHero';
 import { CDMonster } from './CDMonster';
 
 type xySize = {
@@ -51,6 +52,37 @@ export class MonsterArea {
   public chooseActions() {
     this.monsters.forEach((monster) => {
       monster.chooseAction();
+    });
+  }
+
+  public checkForDeadMonsters() {
+    const monstersStillAlive: CDMonster[] = [];
+    const monstersDead: CDMonster[] = [];
+    this.monsters.forEach((monster) => {
+      if (monster.health.getCur() <= 0) {
+        monstersDead.push(monster);
+      } else {
+        monstersStillAlive.push(monster);
+      }
+    });
+    // remove dead monsters
+    monstersDead.forEach((monster) => {
+      monster.destroy();
+    });
+    // only keep alive monsters
+    this.monsters = monstersStillAlive;
+    return this.addMonsters;
+  }
+
+  public resetArmor() {
+    this.monsters.forEach((monster) => {
+      monster.resetArmor();
+    });
+  }
+
+  public attackHero(hero: CDHero) {
+    this.monsters.forEach((monster) => {
+      monster.attackHero(hero);
     });
   }
 
