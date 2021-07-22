@@ -34,12 +34,14 @@ export class Action {
     this.healthEffects = new EffectsOverTurns(
       this.description,
       this.target,
-      json.healthEffects || []
+      json.healthEffects || [],
+      json.verb
     );
     this.armorUpEffects = new EffectsOverTurns(
       this.description,
       this.target,
-      json.armorUpEffects || []
+      json.armorUpEffects || [],
+      json.verb
     );
   }
 

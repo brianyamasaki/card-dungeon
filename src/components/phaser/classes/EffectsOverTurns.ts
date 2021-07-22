@@ -1,4 +1,5 @@
 import { BattleTarget } from './BattleTarget';
+import { GameEmitter, GE_IncrementEffects } from './GameEmitter';
 
 export type REffectsOverTurns = {
   description: string;
@@ -17,23 +18,31 @@ export class EffectsOverTurns {
   target: BattleTarget;
   currentIndex: number;
   effects: number[];
+  verb: string;
   expired = false;
 
-  constructor(description: string, target: BattleTarget, effects: number[]) {
+  constructor(
+    description: string,
+    target: BattleTarget,
+    effects: number[],
+    verb: string
+  ) {
     this.description = description;
     this.target = target;
     this.currentIndex = 0;
     this.effects = effects;
+    this.verb = verb;
+    GameEmitter.getInstance().on(GE_IncrementEffects, this.incrementIndex);
   }
 
   // increment currentIndex and set expired if true
-  public nextTurn() {
-    if (this.expired) return;
+  public incrementIndex = () => {
+    if (this.expired || this.effects.length < 2) return;
     this.currentIndex += 1;
     if (this.currentIndex >= this.effects.length) {
       this.expired = true;
     }
-  }
+  };
 
   public getDamage() {
     if (this.expired) {
