@@ -12,6 +12,7 @@ export type BattleActionsJson = {
 };
 
 export type CardJson = {
+  id?: number; // id is only specified for Recorder/Playback purposes
   name: string;
   description: string;
   imageUrl: string;
@@ -28,6 +29,7 @@ export type HeroJson = {
 };
 
 export type MonsterJson = {
+  id?: number; // id is only specified for Recorder/Playback purposes
   name: string;
   description: string;
   imageUrl: string;

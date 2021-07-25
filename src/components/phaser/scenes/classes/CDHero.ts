@@ -8,8 +8,11 @@ import {
   statsTextStyle,
 } from '../../const';
 import { HeroJson } from '../../../../constJson';
-import NumCurMax from '../../classes/NumCurMax';
-import { EffectsOverTurns } from '../../classes/EffectsOverTurns';
+import NumCurMax, { NumCurMaxRecord } from '../../classes/NumCurMax';
+import {
+  EffectsOverTurns,
+  EffectsOverTurnsRecord,
+} from '../../classes/EffectsOverTurns';
 import { Action } from '../../classes/Action';
 import {
   GameEmitter,
@@ -17,6 +20,26 @@ import {
   GE_DamageHero,
 } from '../../classes/GameEmitter';
 import { Burning } from './Burning';
+
+export type CDHeroRecord = {
+  id: number;
+  name: string;
+  armor: number;
+  health: NumCurMaxRecord;
+  strengthDelta: number;
+  defenseDelta: number;
+  healthEffectsList: EffectsOverTurnsRecord[];
+};
+
+export const initCDHeroRecord: CDHeroRecord = {
+  id: 0,
+  name: '',
+  armor: 0,
+  health: { cur: 0, max: 0 },
+  strengthDelta: 0,
+  defenseDelta: 0,
+  healthEffectsList: [],
+};
 
 export class CDHero extends Phaser.GameObjects.Sprite {
   scene: Phaser.Scene;
@@ -109,6 +132,7 @@ export class CDHero extends Phaser.GameObjects.Sprite {
     const { healthEffects, armorUpEffects } = action;
     if (healthEffects && healthEffects.effectsLength() > 0) {
       if (healthEffects.effectsLength() > 1) {
+        healthEffects.setInCharacter(true);
         this.healthEffectsList.push(healthEffects);
       } else {
         this.health.causeDamage(healthEffects.getDamage());
@@ -148,4 +172,25 @@ export class CDHero extends Phaser.GameObjects.Sprite {
     this.burningIndicator.updateValue(burningTotal);
     this.updateHealth();
   };
+
+  public getRecord(): CDHeroRecord {
+    const {
+      id,
+      name,
+      armor,
+      strengthDelta,
+      defenseDelta,
+      health,
+      healthEffectsList,
+    } = this;
+    return {
+      id,
+      name,
+      armor,
+      health: health.getRecord(),
+      strengthDelta,
+      defenseDelta,
+      healthEffectsList: healthEffectsList.map((eot) => eot.getRecord()),
+    };
+  }
 }
