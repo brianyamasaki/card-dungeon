@@ -53,30 +53,25 @@ export class BattleActions {
   }
 
   public static disableDropZones = (card: CDCard): DisableDropInfo => {
-    let disableArena = false;
-    let disableMonsters = false;
+    let targetEnemyCount = 0;
     card.battleActions.actions.forEach((action) => {
       switch (action.target) {
+        case BattleTarget.TargetAllEnemies:
+          break;
         case BattleTarget.TargetEnemy:
-          disableArena = true;
+          targetEnemyCount += 1;
           break;
         case BattleTarget.TargetHero:
         case BattleTarget.TargetSelf:
-          if (action.verb.toLowerCase() !== 'heal') {
-            disableMonsters = true;
-          }
           break;
         default:
           break;
       }
     });
 
-    if (!disableArena && !disableMonsters) {
-      console.error(`Card ${card.name} deactivates all drop zones`);
-    }
-
+    const disableMonsters = targetEnemyCount === 0;
     return {
-      disableArena,
+      disableArena: !disableMonsters,
       disableMonsters,
     };
   };
