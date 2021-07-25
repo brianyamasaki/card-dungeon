@@ -35,6 +35,7 @@ import { DropZone } from './classes/DropZone';
 import { AssetLibrary } from '../classes/AssetLibrary';
 import { CDController } from './classes/CDContoller';
 import { GameEmitter, GE_GameOver } from '../classes/GameEmitter';
+import { BattleActions } from '../classes/BattleActions';
 
 const backgroundImageId = 'backgroundImage';
 const deckImageId = 'deckImage';
@@ -63,7 +64,7 @@ export default class GameScreen extends Phaser.Scene {
   discard: CDDiscard | null = null;
   mana: CDMana | null = null;
   endTurnButton: TextButton | null = null;
-  arenaDropZone: Phaser.GameObjects.Rectangle | null = null;
+  arenaDropZone: DropZone | null = null;
   dragHighlight: Phaser.GameObjects.Rectangle | null = null;
   isDragging = false;
   controller: CDController | null = null;
@@ -214,6 +215,16 @@ export default class GameScreen extends Phaser.Scene {
           if (gameObject.getData('isCard')) {
             const cdCard = gameObject as CDCard;
             cdCard.alpha = 0.2;
+
+            // try to disable dropZones based on card dragged
+            const { disableArena, disableMonsters } =
+              BattleActions.disableDropZones(cdCard);
+            if (this.arenaDropZone) {
+              this.arenaDropZone.setDroppable(!disableArena);
+            }
+            if (this.monsterArea) {
+              this.monsterArea.disableDropZones(!disableMonsters);
+            }
           }
           this.isDragging = true;
         }

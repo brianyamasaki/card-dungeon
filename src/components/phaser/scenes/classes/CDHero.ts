@@ -18,6 +18,7 @@ import {
   GameEmitter,
   GE_DelExpiredEffects,
   GE_DamageHero,
+  GE_GameOver,
 } from '../../classes/GameEmitter';
 import { Burning } from './Burning';
 
@@ -141,6 +142,9 @@ export class CDHero extends Phaser.GameObjects.Sprite {
     if (armorUpEffects && armorUpEffects.effectsLength() > 0) {
       // currently we don't support long term armor ups
       this.armor += armorUpEffects.getDamage();
+    }
+    if (this.health.getCur() <= 0) {
+      GameEmitter.getInstance().emit(GE_GameOver, { gameWon: false });
     }
     this.updateHealth();
   }

@@ -90,6 +90,12 @@ export class MonsterArea {
     });
   }
 
+  public disableDropZones(droppable: boolean) {
+    this.monsters.forEach((monster) => {
+      monster.setDroppable(droppable);
+    });
+  }
+
   // Phaser method
   private arrangeMonsters = () => {
     const splits: xySize[] = [];

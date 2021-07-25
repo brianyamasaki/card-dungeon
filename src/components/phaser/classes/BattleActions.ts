@@ -3,6 +3,7 @@ import { BattleActionsJson } from '../../../constJson';
 import { CDMonster } from '../scenes/classes/CDMonster';
 import { CDHero } from '../scenes/classes/CDHero';
 import { BattleTarget } from './BattleTarget';
+import { CDCard } from '../scenes/classes/CDCard';
 
 export type RBattleAction = {
   actionsCountMax: number;
@@ -12,6 +13,11 @@ export type RBattleAction = {
 export const initRBattleAction: RBattleAction = {
   actionsCountMax: 0,
   actions: [] as RAction[],
+};
+
+export type DisableDropInfo = {
+  disableArena: boolean;
+  disableMonsters: boolean;
 };
 
 export class BattleActions {
@@ -45,6 +51,35 @@ export class BattleActions {
       }
     });
   }
+
+  public static disableDropZones = (card: CDCard): DisableDropInfo => {
+    let disableArena = false;
+    let disableMonsters = false;
+    card.battleActions.actions.forEach((action) => {
+      switch (action.target) {
+        case BattleTarget.TargetEnemy:
+          disableArena = true;
+          break;
+        case BattleTarget.TargetHero:
+        case BattleTarget.TargetSelf:
+          if (action.verb.toLowerCase() !== 'heal') {
+            disableMonsters = true;
+          }
+          break;
+        default:
+          break;
+      }
+    });
+
+    if (!disableArena && !disableMonsters) {
+      console.error(`Card ${card.name} deactivates all drop zones`);
+    }
+
+    return {
+      disableArena,
+      disableMonsters,
+    };
+  };
 
   public getRBattleAction(): RBattleAction {
     const { actionsCountMax } = this;

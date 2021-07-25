@@ -92,6 +92,11 @@ export class CDMonster extends Phaser.GameObjects.Sprite {
       .on(GE_DamageMonsters, this.useHealthEffectsList);
   }
 
+  setDroppable = (droppable: boolean) => {
+    this.input.dropZone = droppable;
+    return this;
+  };
+
   setPlace(x: number, y: number, minDim: number) {
     this.setPosition(x, y).setDisplaySize(minDim, minDim);
     const textOffset = minDim / 2 + 10;
