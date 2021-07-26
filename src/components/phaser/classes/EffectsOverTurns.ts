@@ -19,6 +19,7 @@ export class EffectsOverTurns {
   currentIndex: number;
   effects: number[];
   verb: string;
+  inCharacter: boolean = false;
   expired = false;
 
   constructor(
@@ -35,9 +36,13 @@ export class EffectsOverTurns {
     GameEmitter.getInstance().on(GE_IncrementEffects, this.incrementIndex);
   }
 
+  setInCharacter(val: boolean) {
+    this.inCharacter = val;
+  }
+
   // increment currentIndex and set expired if true
   public incrementIndex = () => {
-    if (this.expired || this.effects.length < 2) return;
+    if (this.expired || this.effects.length < 2 || !this.inCharacter) return;
     this.currentIndex += 1;
     if (this.currentIndex >= this.effects.length) {
       this.expired = true;
@@ -64,4 +69,21 @@ export class EffectsOverTurns {
       effect: this.getDamage(),
     };
   }
+
+  public getRecord(): EffectsOverTurnsRecord {
+    const { description, verb, effects, currentIndex } = this;
+    return {
+      description,
+      verb,
+      effects,
+      currentIndex,
+    };
+  }
 }
+
+export type EffectsOverTurnsRecord = {
+  description: string;
+  verb: string;
+  effects: number[];
+  currentIndex: number;
+};

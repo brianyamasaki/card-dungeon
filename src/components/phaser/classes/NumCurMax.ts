@@ -51,6 +51,13 @@ export default class NumCurMax {
     };
   }
 
+  public getRecord(): NumCurMaxRecord {
+    return {
+      cur: this.getCur(),
+      max: this.max,
+    };
+  }
+
   public resetToMax() {
     this.delta = 0;
   }
@@ -59,3 +66,8 @@ export default class NumCurMax {
     return `${this.getCur()} / ${this.max}`;
   }
 }
+
+export type NumCurMaxRecord = {
+  cur: number;
+  max: number;
+};

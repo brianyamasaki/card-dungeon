@@ -7,7 +7,13 @@ import { BattleActions } from '../../classes/BattleActions';
 const defaultDepth = 100;
 const hoverDepth = 200;
 
+export type CDCardRecord = {
+  id: number;
+  json: CardJson;
+};
+
 export class CDCard extends Phaser.GameObjects.Sprite {
+  json: CardJson;
   faceTexture: string;
   scene: GameScreen;
   dragStart = new Phaser.Geom.Point(0, 0);
@@ -30,6 +36,7 @@ export class CDCard extends Phaser.GameObjects.Sprite {
     this.scene = scene;
     this.faceTexture = json.imageUrl;
     this.setDepth(defaultDepth);
+    this.json = json;
 
     const scaleFactor = handHeight / this.height;
     this.setScale(scaleFactor, scaleFactor);
@@ -45,7 +52,7 @@ export class CDCard extends Phaser.GameObjects.Sprite {
 
     // non-Phaser data initialization
 
-    this.id = CDCard.currentId++;
+    this.id = json.id ? json.id : CDCard.currentId++;
     this.name = json.name;
     this.description = json.description;
     this.imageUrl = json.imageUrl;
@@ -140,4 +147,11 @@ export class CDCard extends Phaser.GameObjects.Sprite {
   };
 
   // non-Phaser
+  getRecord(): CDCardRecord {
+    const { id, json } = this;
+    return {
+      id,
+      json,
+    };
+  }
 }

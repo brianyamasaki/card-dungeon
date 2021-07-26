@@ -1,16 +1,27 @@
 import Phaser from 'phaser';
 import { nameTextStyle, statsTextStyle, monsterIdMin } from '../../const';
 import { MonsterJson } from '../../../../constJson';
-import NumCurMax from '../../classes/NumCurMax';
+import NumCurMax, { NumCurMaxRecord } from '../../classes/NumCurMax';
 import { BattleActions } from '../../classes/BattleActions';
 import { Action } from '../../classes/Action';
-import { EffectsOverTurns } from '../../classes/EffectsOverTurns';
+import {
+  EffectsOverTurns,
+  EffectsOverTurnsRecord,
+} from '../../classes/EffectsOverTurns';
 import { CDHero } from './CDHero';
 import {
   GameEmitter,
   GE_DelExpiredEffects,
   GE_DamageMonsters,
 } from '../../classes/GameEmitter';
+
+export type CDMonsterRecord = {
+  id: number;
+  name: string;
+  armor: number;
+  health: NumCurMaxRecord;
+  healthEffects: EffectsOverTurnsRecord[];
+};
 
 export class CDMonster extends Phaser.GameObjects.Sprite {
   // Phaser members
@@ -28,11 +39,13 @@ export class CDMonster extends Phaser.GameObjects.Sprite {
   healthEffectsList: EffectsOverTurns[] = [];
   battleActions: BattleActions;
   nextAction: Action | null = null;
+  json: MonsterJson;
 
   constructor(scene: Phaser.Scene, x: number, y: number, json: MonsterJson) {
     super(scene, x, y, json.imageUrl);
     this.setInteractive({ droppable: true });
     this.input.dropZone = true;
+    this.json = json;
 
     this.setData('isMonster', true);
 
@@ -79,6 +92,11 @@ export class CDMonster extends Phaser.GameObjects.Sprite {
       .on(GE_DamageMonsters, this.useHealthEffectsList);
   }
 
+  setDroppable = (droppable: boolean) => {
+    this.input.dropZone = droppable;
+    return this;
+  };
+
   setPlace(x: number, y: number, minDim: number) {
     this.setPosition(x, y).setDisplaySize(minDim, minDim);
     const textOffset = minDim / 2 + 10;
@@ -111,6 +129,7 @@ export class CDMonster extends Phaser.GameObjects.Sprite {
     const { healthEffects, armorUpEffects } = action;
     if (healthEffects && healthEffects.effectsLength() > 0) {
       if (healthEffects.effectsLength() > 1) {
+        healthEffects.setInCharacter(true);
         this.healthEffectsList.push(healthEffects);
       } else {
         this.health.causeDamage(healthEffects.getDamage());
@@ -151,4 +170,15 @@ export class CDMonster extends Phaser.GameObjects.Sprite {
     });
     this.updateHealth();
   };
+
+  getRecord(): CDMonsterRecord {
+    const { id, name, armor, health } = this;
+    return {
+      id,
+      name,
+      armor,
+      health: health.getRecord(),
+      healthEffects: this.healthEffectsList.map((eot) => eot.getRecord()),
+    };
+  }
 }
