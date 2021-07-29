@@ -31,8 +31,12 @@ export class AssetLibrary {
   cardsJson: CardJsonItem[] = [];
   monstersJson: MonsterJsonItem[] = [];
   heroesJson: HeroJsonItem[] = [];
+  onceLoaded = false;
 
   public preload() {
+    if (this.onceLoaded) {
+      return;
+    }
     cardList.forEach((json) => {
       this.cardsJson.push({
         name: json.name,
@@ -51,6 +55,7 @@ export class AssetLibrary {
         data: json,
       });
     });
+    this.onceLoaded = true;
   }
 
   public getCardJson(name: string): CardJson | null {
