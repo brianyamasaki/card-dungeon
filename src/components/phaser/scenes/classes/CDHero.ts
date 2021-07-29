@@ -28,7 +28,6 @@ export type CDHeroRecord = {
   armor: number;
   health: NumCurMaxRecord;
   strengthDelta: number;
-  defenseDelta: number;
   healthEffectsList: EffectsOverTurnsRecord[];
 };
 
@@ -38,7 +37,6 @@ export const initCDHeroRecord: CDHeroRecord = {
   armor: 0,
   health: { cur: 0, max: 0 },
   strengthDelta: 0,
-  defenseDelta: 0,
   healthEffectsList: [],
 };
 
@@ -58,7 +56,6 @@ export class CDHero extends Phaser.GameObjects.Sprite {
   health: NumCurMax;
   armor: number;
   strengthDelta: number = 0;
-  defenseDelta: number = 0;
   healthEffectsList: EffectsOverTurns[] = [];
   burningIndicator: Burning;
 
@@ -136,7 +133,7 @@ export class CDHero extends Phaser.GameObjects.Sprite {
         healthEffects.setInCharacter(true);
         this.healthEffectsList.push(healthEffects);
       } else {
-        this.health.causeDamage(healthEffects.getDamage());
+        this.health.causeDamage(this.armorModifier(healthEffects.getDamage()));
       }
     }
     if (armorUpEffects && armorUpEffects.effectsLength() > 0) {
@@ -147,6 +144,16 @@ export class CDHero extends Phaser.GameObjects.Sprite {
       GameEmitter.getInstance().emit(GE_GameOver, { gameWon: false });
     }
     this.updateHealth();
+  }
+
+  armorModifier(damage: number): number {
+    const armorInitial = this.armor;
+    if (damage + this.armor < 0) {
+      this.armor = 0;
+    } else {
+      this.armor = damage + this.armor;
+    }
+    return damage + armorInitial;
   }
 
   updateHealth() {
@@ -168,9 +175,10 @@ export class CDHero extends Phaser.GameObjects.Sprite {
   useHealthEffectsList = () => {
     let burningTotal = 0;
     this.healthEffectsList.forEach((eot) => {
-      this.health.causeDamage(eot.getDamage());
+      const damageIncoming = this.armorModifier(eot.getDamage());
+      this.health.causeDamage(damageIncoming);
       if (eot.verb === 'Burn') {
-        burningTotal += eot.getDamage();
+        burningTotal += damageIncoming;
       }
     });
     this.burningIndicator.updateValue(burningTotal);
@@ -178,22 +186,13 @@ export class CDHero extends Phaser.GameObjects.Sprite {
   };
 
   public getRecord(): CDHeroRecord {
-    const {
-      id,
-      name,
-      armor,
-      strengthDelta,
-      defenseDelta,
-      health,
-      healthEffectsList,
-    } = this;
+    const { id, name, armor, strengthDelta, health, healthEffectsList } = this;
     return {
       id,
       name,
       armor,
       health: health.getRecord(),
       strengthDelta,
-      defenseDelta,
       healthEffectsList: healthEffectsList.map((eot) => eot.getRecord()),
     };
   }

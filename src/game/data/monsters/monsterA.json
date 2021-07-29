@@ -3,7 +3,7 @@
   "description": "Sample Monster A",
   "imageUrl": "monsters/Enemy Piercer.png",
   "armor": 2,
-  "health": 5,
+  "health": 25,
   "battleActions": {
     "actionsCountMax": 1,
     "actions": [
