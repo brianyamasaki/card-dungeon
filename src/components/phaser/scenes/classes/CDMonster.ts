@@ -14,6 +14,7 @@ import {
   GE_DelExpiredEffects,
   GE_DamageMonsters,
 } from '../../classes/GameEmitter';
+import { Recorder } from '../../classes/Recorder';
 
 export type CDMonsterRecord = {
   id: number;
@@ -154,7 +155,10 @@ export class CDMonster extends Phaser.GameObjects.Sprite {
   }
 
   attackHero(hero: CDHero) {
-    this.nextAction?.actOnHero(hero, this);
+    if (this.nextAction) {
+      this.nextAction.actOnHero(hero, this);
+      Recorder.getInstance().monsterActions(this.id, this.nextAction);
+    }
   }
   // go through healthEffectsList and remove expired healthEffects
   cleanUpEffectsList = () => {

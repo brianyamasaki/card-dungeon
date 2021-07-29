@@ -15,6 +15,7 @@ import {
   GE_DamageHero,
   GE_DamageMonsters,
 } from '../../classes/GameEmitter';
+import { Recorder } from '../../classes/Recorder';
 
 export class CDController {
   imageLibrary: ImageLibrary;
@@ -26,6 +27,7 @@ export class CDController {
   discard: CDDiscard;
   mana: CDMana;
   turnEmitter: GameEmitter;
+  recorder: Recorder;
 
   constructor(
     imageLibrary: ImageLibrary,
@@ -47,6 +49,7 @@ export class CDController {
     this.mana = mana;
     deck.setupDiscard(discard);
     this.turnEmitter = GameEmitter.getInstance();
+    this.recorder = Recorder.getInstance();
   }
 
   startGame(monsters: CDMonster[], cards: CDCard[]) {
@@ -67,6 +70,12 @@ export class CDController {
     // hero armor is reset
     this.hero.resetArmor();
 
+    // record move
+    this.recorder.startTurn(
+      this.handArea.cards,
+      this.monsterArea.monsters,
+      this.discard.cdCards
+    );
     return this;
   }
 
@@ -83,6 +92,9 @@ export class CDController {
 
     // remove dead monsters
     this.monsterArea.checkForDeadMonsters();
+
+    // record play
+    this.recorder.playCard(cdCard);
 
     // updates cards so they can be dragged or not depending on mana available
     this.handArea.updateCards(this.mana.getCur());
@@ -105,6 +117,13 @@ export class CDController {
     this.turnEmitter.emit(GE_IncrementEffects);
     // delete expired effects
     this.turnEmitter.emit(GE_DelExpiredEffects);
+
+    this.recorder.endTurn(
+      this.handArea.cards,
+      this.monsterArea.monsters,
+      this.discard.cdCards,
+      this.hero
+    );
 
     // prepare for the player
     this.startTurn();
