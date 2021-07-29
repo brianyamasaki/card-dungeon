@@ -113,6 +113,17 @@ export class CDMonster extends Phaser.GameObjects.Sprite {
   }
 
   // non-Phaser methods
+
+  armorModifier(damage: number): number {
+    const armorInitial = this.armor;
+    if (damage + this.armor < 0) {
+      this.armor = 0;
+    } else {
+      this.armor = damage + this.armor;
+    }
+    return damage + armorInitial;
+  }
+
   healthString(): string {
     return `Health: ${this.health.getCur()} / ${this.health.getMax()}`;
   }
@@ -132,7 +143,7 @@ export class CDMonster extends Phaser.GameObjects.Sprite {
         healthEffects.setInCharacter(true);
         this.healthEffectsList.push(healthEffects);
       } else {
-        this.health.causeDamage(healthEffects.getDamage());
+        this.health.causeDamage(this.armorModifier(healthEffects.getDamage()));
       }
     }
     if (armorUpEffects && armorUpEffects.effectsLength() > 0) {
@@ -166,7 +177,7 @@ export class CDMonster extends Phaser.GameObjects.Sprite {
   // iterate through healthEffectsList and inflict damage or healing effects
   useHealthEffectsList = () => {
     this.healthEffectsList.forEach((eot) => {
-      this.health.causeDamage(eot.getDamage());
+      this.health.causeDamage(this.armorModifier(eot.getDamage()));
     });
     this.updateHealth();
   };
