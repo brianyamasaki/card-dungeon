@@ -7,6 +7,7 @@ import {
 } from '../scenes/classes/CDHero';
 import { BattleActions } from './BattleActions';
 import { Action } from './Action';
+import { GameEmitter, GE_EndTurnRecorded } from './GameEmitter';
 
 export type CardPlay = {
   card: CDCard;
@@ -102,6 +103,7 @@ export class Recorder {
 
     this.turns.push(this.currentTurn);
     this.currentTurn = this.initTurn();
+    GameEmitter.getInstance().emit(GE_EndTurnRecorded);
   }
 
   serialize() {

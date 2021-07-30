@@ -26,11 +26,12 @@ export class EffectsOverTurns {
     description: string,
     target: BattleTarget,
     effects: number[],
-    verb: string
+    verb: string,
+    currentIndex?: number
   ) {
     this.description = description;
     this.target = target;
-    this.currentIndex = 0;
+    this.currentIndex = typeof currentIndex !== 'number' ? 0 : currentIndex;
     this.effects = effects;
     this.verb = verb;
     GameEmitter.getInstance().on(GE_IncrementEffects, this.incrementIndex);
@@ -71,9 +72,10 @@ export class EffectsOverTurns {
   }
 
   public getRecord(): EffectsOverTurnsRecord {
-    const { description, verb, effects, currentIndex } = this;
+    const { description, target, verb, effects, currentIndex } = this;
     return {
       description,
+      target,
       verb,
       effects,
       currentIndex,
@@ -83,6 +85,7 @@ export class EffectsOverTurns {
 
 export type EffectsOverTurnsRecord = {
   description: string;
+  target: BattleTarget;
   verb: string;
   effects: number[];
   currentIndex: number;

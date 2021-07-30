@@ -1,14 +1,15 @@
 import Phaser from 'phaser';
 import { handRectangle, handHeight, handWidth, handYctr } from '../../const';
-import { CDCard } from './CDCard';
+import GameScreen from '../Game';
+import { CDCard, CDCardRecord } from './CDCard';
 
 export class HandArea {
   cards: CDCard[];
   x: number;
   y: number;
-  scene: Phaser.Scene;
+  scene: GameScreen;
 
-  constructor(scene: Phaser.Scene, x: number, y: number) {
+  constructor(scene: GameScreen, x: number, y: number) {
     this.scene = scene;
     this.x = x;
     this.y = y;
@@ -35,6 +36,19 @@ export class HandArea {
       card.visible = true;
       card.addToScene(this.scene);
     });
+    return this;
+  };
+
+  replaceCards = (cardRecords: CDCardRecord[]) => {
+    this.cards = cardRecords.map((cardRecord) => {
+      const card = new CDCard(this.scene, 0, 0, {
+        ...cardRecord.json,
+        id: cardRecord.id,
+      }).addToScene(this.scene);
+
+      return card;
+    });
+    this.arrangeCards();
     return this;
   };
 

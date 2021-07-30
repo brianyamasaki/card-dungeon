@@ -1,8 +1,9 @@
 import Phaser from 'phaser';
 import { monsterRectangle } from '../../const';
 import { CDHero } from './CDHero';
-import { CDMonster } from './CDMonster';
+import { CDMonster, CDMonsterRecord } from './CDMonster';
 import { GameEmitter, GE_GameOver } from '../../classes/GameEmitter';
+import NumCurMax from '../../classes/NumCurMax';
 
 type xySize = {
   x: number;
@@ -34,6 +35,16 @@ export class MonsterArea {
       monster.setData('monsterIndex', initialIndex + i);
     });
     this.monsters = this.monsters.concat(monsters);
+    this.arrangeMonsters();
+  };
+
+  public replaceMonsters = (monsterRecords: CDMonsterRecord[]) => {
+    this.monsters = monsterRecords.map((mr) => {
+      const monster = new CDMonster(this.scene, 0, 0, mr.json);
+      monster.armor = mr.armor;
+      monster.health = new NumCurMax(mr.health.max, mr.health.cur);
+      return monster;
+    });
     this.arrangeMonsters();
   };
 

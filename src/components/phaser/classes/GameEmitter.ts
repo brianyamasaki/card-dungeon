@@ -21,6 +21,7 @@ export const GE_DelExpiredEffects = 'GE_DELEGE_EXPIRED_EFFECTS';
 export const GE_DamageMonsters = 'GE_DAMAGE_MONSTERS';
 export const GE_DamageHero = 'GE_DAMAGE_HERO';
 export const GE_GameOver = 'GE_Game_over';
+export const GE_EndTurnRecorded = 'GE_End_Turn_Recorded';
 
 let instance: GameEmitter | null = null;
 
