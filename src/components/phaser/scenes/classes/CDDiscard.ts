@@ -1,13 +1,20 @@
 import Phaser from 'phaser';
-import { discardWidth, discardHeight, nameTextStyle } from '../../const';
-import { CDCard } from './CDCard';
+import {
+  discardWidth,
+  discardHeight,
+  nameTextStyle,
+  callBack,
+} from '../../const';
+import GameScreen from '../Game';
+import { CDCard, CDCardRecord } from './CDCard';
 
 export class CDDiscard extends Phaser.GameObjects.Sprite {
-  scene: Phaser.Scene;
+  scene: GameScreen;
   countText: Phaser.GameObjects.Text;
   cdCards: CDCard[] = [];
+  onClickHandler: callBack | null = null;
 
-  constructor(scene: Phaser.Scene, x: number, y: number, texture: string) {
+  constructor(scene: GameScreen, x: number, y: number, texture: string) {
     super(scene, x, y, texture);
     this.scene = scene;
     scene.add.existing(this);
@@ -20,7 +27,23 @@ export class CDDiscard extends Phaser.GameObjects.Sprite {
     );
     this.setDisplaySize(discardWidth, discardHeight);
     scene.add.existing(this.countText);
+    this.setInteractive().on(
+      Phaser.Input.Events.GAMEOBJECT_POINTER_UP,
+      this.handlePointerUp,
+      this
+    );
   }
+
+  setOnClickHandler = (cb: callBack) => {
+    this.onClickHandler = cb;
+    return this;
+  };
+
+  handlePointerUp = (pointer: Phaser.Input.Pointer) => {
+    if (this.onClickHandler) {
+      this.onClickHandler();
+    }
+  };
 
   updateCount() {
     this.countText.setText(this.cdCards.length.toString());
@@ -48,6 +71,14 @@ export class CDDiscard extends Phaser.GameObjects.Sprite {
     this.updateCount();
     return this;
   }
+
+  replaceCards = (cardRecords: CDCardRecord[]) => {
+    this.cdCards = cardRecords.map((cr) => {
+      const card = new CDCard(this.scene, 0, 0, cr.json);
+      card.id = cr.id;
+      return card;
+    });
+  };
 
   removeAllCards(): CDCard[] {
     const retval = this.cdCards;

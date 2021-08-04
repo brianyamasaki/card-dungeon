@@ -128,3 +128,22 @@ export const statsTextStyle = {
   color: 'black',
   align: 'center',
 };
+
+export const showCardsRectangle = {
+  left: 200,
+  right: 800,
+  top: paddedGameRectangle.top,
+  bottom: paddedGameRectangle.bottom,
+};
+
+export const showCardsXCtr =
+  (showCardsRectangle.left + showCardsRectangle.right) / 2;
+export const showCardsYCtr =
+  (showCardsRectangle.top + showCardsRectangle.bottom) / 2;
+export const showCardsWidth =
+  showCardsRectangle.right - showCardsRectangle.left;
+export const showCardsHeight =
+  showCardsRectangle.bottom - showCardsRectangle.top;
+
+export const showCardsCardHeight = handHeight;
+export const showCardsCardWidth = handHeight / cardAspectRatio;

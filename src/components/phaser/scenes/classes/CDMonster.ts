@@ -14,13 +14,14 @@ import {
   GE_DelExpiredEffects,
   GE_DamageMonsters,
 } from '../../classes/GameEmitter';
+import { Recorder } from '../../classes/Recorder';
 
 export type CDMonsterRecord = {
   id: number;
-  name: string;
   armor: number;
   health: NumCurMaxRecord;
   healthEffects: EffectsOverTurnsRecord[];
+  json: MonsterJson;
 };
 
 export class CDMonster extends Phaser.GameObjects.Sprite {
@@ -40,6 +41,7 @@ export class CDMonster extends Phaser.GameObjects.Sprite {
   battleActions: BattleActions;
   nextAction: Action | null = null;
   json: MonsterJson;
+  isRemoved = false;
 
   constructor(scene: Phaser.Scene, x: number, y: number, json: MonsterJson) {
     super(scene, x, y, json.imageUrl);
@@ -87,9 +89,20 @@ export class CDMonster extends Phaser.GameObjects.Sprite {
     scene.add.existing(this.monsterName);
     scene.add.existing(this.monsterHealth);
     scene.add.existing(this.monsterAction);
-    GameEmitter.getInstance()
-      .on(GE_DelExpiredEffects, this.cleanUpEffectsList)
-      .on(GE_DamageMonsters, this.useHealthEffectsList);
+    this.gameEvents(true);
+  }
+
+  gameEvents(setup: boolean) {
+    const emitter = GameEmitter.getInstance();
+    if (setup) {
+      emitter
+        .on(GE_DelExpiredEffects, this.cleanUpEffectsList)
+        .on(GE_DamageMonsters, this.useHealthEffectsList);
+    } else {
+      emitter
+        .off(GE_DelExpiredEffects, this.cleanUpEffectsList)
+        .off(GE_DamageMonsters, this.useHealthEffectsList);
+    }
   }
 
   setDroppable = (droppable: boolean) => {
@@ -106,6 +119,8 @@ export class CDMonster extends Phaser.GameObjects.Sprite {
   }
 
   destroy() {
+    this.gameEvents(false);
+    this.isRemoved = true;
     this.monsterName.destroy();
     this.monsterHealth.destroy();
     this.monsterAction.destroy();
@@ -129,7 +144,10 @@ export class CDMonster extends Phaser.GameObjects.Sprite {
   }
 
   updateHealth() {
-    this.monsterHealth.setText(this.healthString());
+    if (this.isRemoved) {
+      return;
+    }
+    this.monsterHealth?.setText(this.healthString());
   }
 
   resetArmor() {
@@ -165,7 +183,10 @@ export class CDMonster extends Phaser.GameObjects.Sprite {
   }
 
   attackHero(hero: CDHero) {
-    this.nextAction?.actOnHero(hero, this);
+    if (this.nextAction) {
+      this.nextAction.actOnHero(hero, this);
+      Recorder.getInstance().monsterActions(this.id, this.nextAction);
+    }
   }
   // go through healthEffectsList and remove expired healthEffects
   cleanUpEffectsList = () => {
@@ -183,13 +204,13 @@ export class CDMonster extends Phaser.GameObjects.Sprite {
   };
 
   getRecord(): CDMonsterRecord {
-    const { id, name, armor, health } = this;
+    const { id, armor, health } = this;
     return {
       id,
-      name,
       armor,
       health: health.getRecord(),
       healthEffects: this.healthEffectsList.map((eot) => eot.getRecord()),
+      json: this.json,
     };
   }
 }

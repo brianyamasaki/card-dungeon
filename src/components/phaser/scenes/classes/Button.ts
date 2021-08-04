@@ -4,12 +4,23 @@ export class Button extends Phaser.GameObjects.Image {
   upTexture: string;
   overTexture: string;
   downTexture: string;
+  isDiabled = false;
 
-  constructor(scene: Phaser.Scene, x: number, y: number, texture: string) {
+  constructor(
+    scene: Phaser.Scene,
+    x: number,
+    y: number,
+    texture: string,
+    width?: number,
+    height?: number
+  ) {
     super(scene, x, y, texture);
     this.upTexture = texture;
     this.overTexture = texture;
     this.downTexture = texture;
+    if (typeof width === 'number' && typeof height === 'number') {
+      this.setDisplaySize(width, height);
+    }
 
     this.setInteractive()
       .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, this.handleUp, this)
@@ -33,7 +44,20 @@ export class Button extends Phaser.GameObjects.Image {
     return this;
   }
 
+  setDisabled(disable: boolean) {
+    this.isDiabled = disable;
+    if (disable) {
+      this.alpha = 0.5;
+    } else {
+      this.alpha = 1;
+    }
+    return this;
+  }
+
   private handleUp(pointer: Phaser.Input.Pointer) {
+    if (this.isDiabled) {
+      return;
+    }
     this.handleOver(pointer);
   }
 
@@ -42,10 +66,16 @@ export class Button extends Phaser.GameObjects.Image {
   }
 
   private handleDown(pointer: Phaser.Input.Pointer) {
+    if (this.isDiabled) {
+      return;
+    }
     this.setTexture(this.downTexture);
   }
 
   private handleOver(pointer: Phaser.Input.Pointer) {
+    if (this.isDiabled) {
+      return;
+    }
     this.setTexture(this.overTexture);
   }
 }

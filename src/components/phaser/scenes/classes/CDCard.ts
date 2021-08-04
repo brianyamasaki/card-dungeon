@@ -48,7 +48,10 @@ export class CDCard extends Phaser.GameObjects.Sprite {
       .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, this.onPointerOut)
       .on(Phaser.Input.Events.GAMEOBJECT_DRAG_START, this.onDragStart)
       .on(Phaser.Input.Events.GAMEOBJECT_DRAG, this.onDrag)
-      .on(Phaser.Input.Events.GAMEOBJECT_DRAG_END, this.onDragEnd);
+      .on(Phaser.Input.Events.GAMEOBJECT_DRAG_END, this.onDragEnd)
+      .on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, () => {
+        console.log(`Pointer Down on ${this.id} named ${this.name}`);
+      });
 
     // non-Phaser data initialization
 
@@ -64,7 +67,9 @@ export class CDCard extends Phaser.GameObjects.Sprite {
     const isPlayable = currentMana >= this.cost;
     if (this.input && this.input.draggable !== undefined) {
       this.input.draggable = isPlayable;
-      this.setInteractive({ useHandCursor: isPlayable });
+      this.setInteractive();
+    } else {
+      console.log('not draggable?');
     }
     this.alpha = isPlayable ? 1.0 : 0.5;
     return this;
@@ -78,6 +83,15 @@ export class CDCard extends Phaser.GameObjects.Sprite {
     return this;
   }
 
+  public removeFromScene() {
+    this.isAddedToScene = false;
+  }
+
+  public addToContainer(container: Phaser.GameObjects.Container) {
+    container.add(this);
+    return this;
+  }
+
   public setPos = (x: number, y: number) => {
     this.x = x;
     this.y = y;
@@ -88,25 +102,10 @@ export class CDCard extends Phaser.GameObjects.Sprite {
 
   private onPointerOver = () => {
     this.setDepth(hoverDepth);
-    if (this.isDragging) return;
-    this.scene.tweens.add({
-      targets: this,
-      scale: 0.5,
-      y: this.y - 35,
-      ease: 'linear',
-      duration: 150,
-    });
   };
 
   private onPointerOut = () => {
     this.setDepth(defaultDepth);
-    this.scene.tweens.add({
-      targets: this,
-      scale: this.preDragScale,
-      y: this.preDragY,
-      ease: 'linear',
-      duration: 100,
-    });
   };
 
   private onDragStart = (
@@ -116,14 +115,6 @@ export class CDCard extends Phaser.GameObjects.Sprite {
   ) => {
     this.dragStart = new Phaser.Geom.Point(this.x, this.y);
     this.isDragging = true;
-    if (this.scale > this.preDragScale) {
-      this.scene.tweens.add({
-        targets: this,
-        scale: this.preDragScale,
-        ease: 'linear',
-        duration: 50,
-      });
-    }
   };
 
   private onDrag = (

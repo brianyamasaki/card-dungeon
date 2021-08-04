@@ -6,6 +6,8 @@ import {
   initCDHeroRecord,
 } from '../scenes/classes/CDHero';
 import { BattleActions } from './BattleActions';
+import { Action } from './Action';
+import { GameEmitter, GE_EndTurnRecorded } from './GameEmitter';
 
 export type CardPlay = {
   card: CDCard;
@@ -15,7 +17,7 @@ export type CardPlay = {
 
 export type MonsterAction = {
   monsterId: number;
-  battleActions: BattleActions;
+  action: Action;
 };
 
 export type Turn = {
@@ -50,12 +52,21 @@ const initTurn: Turn = {
   },
 };
 
+let instance: Recorder | null = null;
+
 export class Recorder {
   turns: Turn[] = [];
   currentTurn: Turn;
 
   constructor() {
     this.currentTurn = this.initTurn();
+  }
+
+  static getInstance(): Recorder {
+    if (instance === null) {
+      instance = new Recorder();
+    }
+    return instance;
   }
 
   initTurn(): Turn {
@@ -74,8 +85,8 @@ export class Recorder {
     this.currentTurn.cardsPlayed.push(card.getRecord());
   }
 
-  monsterActions(monsterId: number, battleActions: BattleActions) {
-    this.currentTurn.monsterActions.push({ monsterId, battleActions });
+  monsterActions(monsterId: number, action: Action) {
+    this.currentTurn.monsterActions.push({ monsterId, action });
   }
 
   endTurn(
@@ -92,6 +103,7 @@ export class Recorder {
 
     this.turns.push(this.currentTurn);
     this.currentTurn = this.initTurn();
+    GameEmitter.getInstance().emit(GE_EndTurnRecorded);
   }
 
   serialize() {
@@ -100,7 +112,7 @@ export class Recorder {
       encodeURIComponent(JSON.stringify(this.turns));
     var downloadAnchorNode = document.createElement('a');
     downloadAnchorNode.setAttribute('href', dataStr);
-    downloadAnchorNode.setAttribute('download', 'savedState' + '.json');
+    downloadAnchorNode.setAttribute('download', 'savedState.json');
     document.body.appendChild(downloadAnchorNode); // required for firefox
     downloadAnchorNode.click();
     downloadAnchorNode.remove();

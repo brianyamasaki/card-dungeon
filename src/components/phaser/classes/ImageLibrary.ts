@@ -7,9 +7,13 @@ export class ImageLibrary {
   cardImageKeys: string[] = [];
   monsterImageKeys: string[] = [];
   heroImageKeys: string[] = [];
+  onceLoaded = false;
 
   preload(scene: Phaser.Scene) {
     const { cardImages, monsterImages, heroImages, errorCardImage } = imageList;
+    if (this.onceLoaded) {
+      return;
+    }
     if (
       cardImages &&
       cardImages.length &&
@@ -25,6 +29,7 @@ export class ImageLibrary {
         'errorCardImage',
         `${phaserAssetsFolder}${errorCardImage}`
       );
+      this.onceLoaded = true;
     } else {
       console.error(
         'imageList.json must have cardImages, monsterImages and heroImages as arrays of URL strings'

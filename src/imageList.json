@@ -1,5 +1,5 @@
 {
-  "errorCardImage": "Cars/Error_Card.png",
+  "errorCardImage": "Cards/Error_Card.png",
   "cardImages": [
     "Cards/Fortify.png",
     "Cards/Zap.png",

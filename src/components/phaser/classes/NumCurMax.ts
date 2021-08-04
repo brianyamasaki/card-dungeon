@@ -11,8 +11,10 @@ export const initRNumCurMax: RNumCurMax = {
 export default class NumCurMax {
   max = 0;
   delta = 0;
-  constructor(max: number) {
+
+  constructor(max: number, cur?: number) {
     this.max = max;
+    this.delta = cur !== undefined ? max - cur : 0;
   }
 
   public setDelta(delta: number) {

@@ -8,6 +8,7 @@ import { CDDeck } from './classes/CDDeck';
 import { CDDiscard } from './classes/CDDiscard';
 import { CDMana } from './classes/CDMana';
 import { ImageLibrary } from '../classes/ImageLibrary';
+import { Button } from './classes/Button';
 import {
   startGameScreenId,
   gameScreenId,
@@ -29,6 +30,7 @@ import {
   arenaYCtr,
   arenaWidth,
   arenaHeight,
+  callBack,
 } from '../const';
 import { TextButton } from './classes/TextButton';
 import { DropZone } from './classes/DropZone';
@@ -36,6 +38,7 @@ import { AssetLibrary } from '../classes/AssetLibrary';
 import { CDController } from './classes/CDContoller';
 import { GameEmitter, GE_GameOver } from '../classes/GameEmitter';
 import { BattleActions } from '../classes/BattleActions';
+import ShowCards from './classes/ShowCards';
 
 const backgroundImageId = 'backgroundImage';
 const deckImageId = 'deckImage';
@@ -43,6 +46,16 @@ const discardImageId = 'discardImage';
 const gameLostId = 'gameLostImage';
 const gameWonId = 'gameWonImage';
 export const burningImageId = 'burningImage';
+
+// debug textures
+const backButtonId = 'backButtonImage';
+const backOverButtonId = 'backOverButtonImage';
+const forwardButtonId = 'forwardButtonImage';
+const forwardOverButtonId = 'forwardOverButtonImage';
+const loadButtonId = 'loadButtonImage';
+const loadOverButtonId = 'loadOverButtonImage';
+const saveButtonId = 'saveButtonImage';
+const saveOverButtonId = 'saveOverButtonImage';
 
 // game textures are listed here and loaded at preload()
 const gameTextures = [
@@ -53,6 +66,27 @@ const gameTextures = [
   [gameWonId, `${phaserAssetsFolder}GameWon.png`],
   [burningImageId, `${phaserAssetsFolder}Burning.png`],
 ];
+
+const debugTextures = [
+  [backButtonId, `${phaserAssetsFolder}Debug/Back.png`],
+  [backOverButtonId, `${phaserAssetsFolder}Debug/Back-over.png`],
+  [forwardButtonId, `${phaserAssetsFolder}Debug/Forward.png`],
+  [forwardOverButtonId, `${phaserAssetsFolder}Debug/Forward-over.png`],
+  [loadButtonId, `${phaserAssetsFolder}Debug/Load.png`],
+  [loadOverButtonId, `${phaserAssetsFolder}Debug/Load-over.png`],
+  [saveButtonId, `${phaserAssetsFolder}Debug/Save.png`],
+  [saveOverButtonId, `${phaserAssetsFolder}Debug/Save-over.png`],
+];
+
+type BtnInfo = {
+  x: number;
+  y: number;
+  texture: string;
+  overTexture: string;
+  fn: callBack;
+  fnEnable?: callBack;
+  button?: Button;
+};
 
 export default class GameScreen extends Phaser.Scene {
   imageLibrary: ImageLibrary;
@@ -66,6 +100,7 @@ export default class GameScreen extends Phaser.Scene {
   endTurnButton: TextButton | null = null;
   arenaDropZone: DropZone | null = null;
   dragHighlight: Phaser.GameObjects.Rectangle | null = null;
+  showCardContainer: ShowCards | null = null;
   isDragging = false;
   controller: CDController | null = null;
   gameEmitter: GameEmitter;
@@ -78,7 +113,8 @@ export default class GameScreen extends Phaser.Scene {
   }
 
   preload() {
-    gameTextures.forEach((info) => {
+    const allTextures = gameTextures.concat(debugTextures);
+    allTextures.forEach((info) => {
       this.load.image(info[0], info[1]);
     });
     this.imageLibrary.preload(this);
@@ -106,9 +142,38 @@ export default class GameScreen extends Phaser.Scene {
         discardXCtr,
         discardYCtr,
         discardImageId
-      );
+      ).setOnClickHandler(() => {
+        if (!this.showCardContainer) {
+          this.showCardContainer = new ShowCards(this);
+          this.add.existing(this.showCardContainer);
+        } else {
+          this.showCardContainer.visible = !this.showCardContainer.visible;
+        }
+        if (this.discard && this.showCardContainer.visible === true) {
+          this.showCardContainer.replaceCards(this.discard.cdCards);
+        }
+      });
       this.mana = new CDMana(this, manaRectangle.left, manaRectangle.top, 3);
-      this.deck = new CDDeck(this, deckXCtr, deckYCtr, deckImageId);
+      this.deck = new CDDeck(
+        this,
+        deckXCtr,
+        deckYCtr,
+        deckImageId
+      ).setOnClickHandler(() => {
+        if (!this.showCardContainer) {
+          this.showCardContainer = new ShowCards(this);
+          this.add.existing(this.showCardContainer);
+        } else {
+          if (this.showCardContainer.visible) {
+            this.showCardContainer.onClose();
+          } else {
+            this.showCardContainer.visible = true;
+          }
+        }
+        if (this.deck && this.showCardContainer.visible === true) {
+          this.showCardContainer.replaceCards(this.deck.cdCards);
+        }
+      });
       this.controller = new CDController(
         this.imageLibrary,
         this.assetLibrary,
@@ -149,6 +214,7 @@ export default class GameScreen extends Phaser.Scene {
         endTurnWidth,
         this.controller.endTurn
       );
+      this.add.existing(this.endTurnButton);
       this.arenaDropZone = new DropZone(
         this,
         arenaXCtr,
@@ -158,6 +224,7 @@ export default class GameScreen extends Phaser.Scene {
       ).setData('isArena', true);
       this.setInputEvents();
       this.gameEmitter.on(GE_GameOver, this.gameOverScreen);
+      // this.createDebugButtons();
     }
   };
 
@@ -312,4 +379,62 @@ export default class GameScreen extends Phaser.Scene {
       this.scene.start(startGameScreenId);
     });
   };
+
+  createDebugButtons(): BtnInfo[] {
+    const buttonDxy = 40;
+    const debugButtons: BtnInfo[] = [
+      {
+        x: 800,
+        y: 50,
+        texture: backButtonId,
+        overTexture: backOverButtonId,
+        fn: () => {
+          console.log('Back');
+        },
+      },
+      {
+        x: 850,
+        y: 50,
+        texture: forwardButtonId,
+        overTexture: forwardOverButtonId,
+        fn: () => {
+          console.log('forward');
+        },
+      },
+      {
+        x: 900,
+        y: 50,
+        texture: loadButtonId,
+        overTexture: loadOverButtonId,
+        fn: () => {
+          console.log('load');
+        },
+      },
+      {
+        x: 950,
+        y: 50,
+        texture: saveButtonId,
+        overTexture: saveOverButtonId,
+        fn: () => {
+          console.log('save');
+        },
+      },
+    ];
+
+    debugButtons.forEach((btnInfo) => {
+      const button = new Button(
+        this,
+        btnInfo.x,
+        btnInfo.y,
+        btnInfo.texture,
+        buttonDxy,
+        buttonDxy
+      )
+        .setOverTexture(btnInfo.overTexture)
+        .on('pointerup', btnInfo.fn);
+      btnInfo.button = button;
+      this.add.existing(button);
+    });
+    return debugButtons;
+  }
 }

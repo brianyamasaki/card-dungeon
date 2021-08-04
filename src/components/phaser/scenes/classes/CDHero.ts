@@ -106,9 +106,20 @@ export class CDHero extends Phaser.GameObjects.Sprite {
     );
     scene.add.existing(this.heroName);
     scene.add.existing(this.heroHealth);
-    GameEmitter.getInstance()
-      .on(GE_DelExpiredEffects, this.cleanUpEffectsList)
-      .on(GE_DamageHero, this.useHealthEffectsList);
+    this.gameEvents(true);
+  }
+
+  gameEvents(setup: boolean) {
+    const emitter = GameEmitter.getInstance();
+    if (setup) {
+      emitter
+        .on(GE_DelExpiredEffects, this.cleanUpEffectsList)
+        .on(GE_DamageHero, this.useHealthEffectsList);
+    } else {
+      emitter
+        .off(GE_DelExpiredEffects, this.cleanUpEffectsList)
+        .off(GE_DamageHero, this.useHealthEffectsList);
+    }
   }
 
   statusString = (): string => {
@@ -119,6 +130,7 @@ export class CDHero extends Phaser.GameObjects.Sprite {
   };
 
   destroy() {
+    this.gameEvents(false);
     this.heroHealth.destroy();
     this.heroName.destroy();
     this.burningIndicator.destroy();
