@@ -86,6 +86,9 @@ export class HandArea {
     const foundCard = this.findCard(id);
     if (!foundCard) {
       console.error(`card ${id} not found in hand`);
+    } else {
+      foundCard.removeFromScene();
+      console.log(`Card ${id} with name ${foundCard.name} removed from hand`);
     }
     this.cards = this.cards.filter((cdCard) => cdCard.id !== id);
     this.arrangeCards();

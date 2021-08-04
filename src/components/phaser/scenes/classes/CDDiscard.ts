@@ -1,5 +1,10 @@
 import Phaser from 'phaser';
-import { discardWidth, discardHeight, nameTextStyle } from '../../const';
+import {
+  discardWidth,
+  discardHeight,
+  nameTextStyle,
+  callBack,
+} from '../../const';
 import GameScreen from '../Game';
 import { CDCard, CDCardRecord } from './CDCard';
 
@@ -7,6 +12,7 @@ export class CDDiscard extends Phaser.GameObjects.Sprite {
   scene: GameScreen;
   countText: Phaser.GameObjects.Text;
   cdCards: CDCard[] = [];
+  onClickHandler: callBack | null = null;
 
   constructor(scene: GameScreen, x: number, y: number, texture: string) {
     super(scene, x, y, texture);
@@ -21,7 +27,23 @@ export class CDDiscard extends Phaser.GameObjects.Sprite {
     );
     this.setDisplaySize(discardWidth, discardHeight);
     scene.add.existing(this.countText);
+    this.setInteractive().on(
+      Phaser.Input.Events.GAMEOBJECT_POINTER_UP,
+      this.handlePointerUp,
+      this
+    );
   }
+
+  setOnClickHandler = (cb: callBack) => {
+    this.onClickHandler = cb;
+    return this;
+  };
+
+  handlePointerUp = (pointer: Phaser.Input.Pointer) => {
+    if (this.onClickHandler) {
+      this.onClickHandler();
+    }
+  };
 
   updateCount() {
     this.countText.setText(this.cdCards.length.toString());

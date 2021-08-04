@@ -38,6 +38,7 @@ import { AssetLibrary } from '../classes/AssetLibrary';
 import { CDController } from './classes/CDContoller';
 import { GameEmitter, GE_GameOver } from '../classes/GameEmitter';
 import { BattleActions } from '../classes/BattleActions';
+import ShowCards from './classes/ShowCards';
 
 const backgroundImageId = 'backgroundImage';
 const deckImageId = 'deckImage';
@@ -99,6 +100,7 @@ export default class GameScreen extends Phaser.Scene {
   endTurnButton: TextButton | null = null;
   arenaDropZone: DropZone | null = null;
   dragHighlight: Phaser.GameObjects.Rectangle | null = null;
+  showCardContainer: ShowCards | null = null;
   isDragging = false;
   controller: CDController | null = null;
   gameEmitter: GameEmitter;
@@ -140,9 +142,38 @@ export default class GameScreen extends Phaser.Scene {
         discardXCtr,
         discardYCtr,
         discardImageId
-      );
+      ).setOnClickHandler(() => {
+        if (!this.showCardContainer) {
+          this.showCardContainer = new ShowCards(this);
+          this.add.existing(this.showCardContainer);
+        } else {
+          this.showCardContainer.visible = !this.showCardContainer.visible;
+        }
+        if (this.discard && this.showCardContainer.visible === true) {
+          this.showCardContainer.replaceCards(this.discard.cdCards);
+        }
+      });
       this.mana = new CDMana(this, manaRectangle.left, manaRectangle.top, 3);
-      this.deck = new CDDeck(this, deckXCtr, deckYCtr, deckImageId);
+      this.deck = new CDDeck(
+        this,
+        deckXCtr,
+        deckYCtr,
+        deckImageId
+      ).setOnClickHandler(() => {
+        if (!this.showCardContainer) {
+          this.showCardContainer = new ShowCards(this);
+          this.add.existing(this.showCardContainer);
+        } else {
+          if (this.showCardContainer.visible) {
+            this.showCardContainer.onClose();
+          } else {
+            this.showCardContainer.visible = true;
+          }
+        }
+        if (this.deck && this.showCardContainer.visible === true) {
+          this.showCardContainer.replaceCards(this.deck.cdCards);
+        }
+      });
       this.controller = new CDController(
         this.imageLibrary,
         this.assetLibrary,
@@ -183,6 +214,7 @@ export default class GameScreen extends Phaser.Scene {
         endTurnWidth,
         this.controller.endTurn
       );
+      this.add.existing(this.endTurnButton);
       this.arenaDropZone = new DropZone(
         this,
         arenaXCtr,
@@ -192,7 +224,7 @@ export default class GameScreen extends Phaser.Scene {
       ).setData('isArena', true);
       this.setInputEvents();
       this.gameEmitter.on(GE_GameOver, this.gameOverScreen);
-      this.createDebugButtons();
+      // this.createDebugButtons();
     }
   };
 

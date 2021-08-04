@@ -32,7 +32,6 @@ export class TextButton extends Phaser.GameObjects.Text {
       .on(Phaser.Input.Events.POINTER_OUT, this.onLeave)
       .on(Phaser.Input.Events.POINTER_DOWN, this.onDown)
       .on(Phaser.Input.Events.POINTER_UP, this.onUp);
-    scene.add.existing(this);
   }
 
   onHover() {

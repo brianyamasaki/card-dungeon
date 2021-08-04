@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { deckWidth, deckHeight, nameTextStyle } from '../../const';
+import { deckWidth, deckHeight, nameTextStyle, callBack } from '../../const';
 import { CDCard } from '../classes/CDCard';
 import { CDDiscard } from './CDDiscard';
 
@@ -9,6 +9,7 @@ export class CDDeck extends Phaser.GameObjects.Sprite {
   // non-Phaser members
   cdCards: CDCard[] = [];
   discard: CDDiscard | null = null;
+  onClickHandler: callBack = () => {};
 
   constructor(scene: Phaser.Scene, x: number, y: number, texture: string) {
     super(scene, x, y, texture);
@@ -23,7 +24,23 @@ export class CDDeck extends Phaser.GameObjects.Sprite {
     );
     this.setDisplaySize(deckWidth, deckHeight);
     scene.add.existing(this.countText);
+    this.setInteractive().on(
+      Phaser.Input.Events.GAMEOBJECT_POINTER_UP,
+      this.handlePointerUp,
+      this
+    );
   }
+
+  setOnClickHandler = (cb: callBack) => {
+    this.onClickHandler = cb;
+    return this;
+  };
+
+  handlePointerUp = (pointer: Phaser.Input.Pointer) => {
+    if (this.onClickHandler) {
+      this.onClickHandler();
+    }
+  };
 
   updateCount() {
     this.countText.setText(this.cdCards.length.toString());
